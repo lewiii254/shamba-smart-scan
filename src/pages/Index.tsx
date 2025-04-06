@@ -7,6 +7,7 @@ import { Upload, MessageSquare, Loader2, History, Info, Home, Menu, X } from "lu
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link, useLocation } from "react-router-dom";
 
 type ScanResult = {
   id: string;
@@ -17,12 +18,20 @@ type ScanResult = {
 };
 
 const Index = () => {
+  const location = useLocation();
   const [image, setImage] = useState<string | null>(null);
   const [advice, setAdvice] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [scanHistory, setScanHistory] = useState<ScanResult[]>([]);
-  const [activeTab, setActiveTab] = useState("scan");
+  const [activeTab, setActiveTab] = useState(() => {
+    // Set the active tab based on the URL path
+    const path = location.pathname;
+    if (path === "/scan") return "scan";
+    if (path === "/history") return "history";
+    if (path === "/about") return "about";
+    return "scan"; // Default
+  });
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -155,11 +164,13 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2 text-green-700">
-              <img 
-                src="/placeholder.svg" 
-                alt="Crop Doctor Logo" 
-                className="w-8 h-8 text-green-500" 
-              />
+              <Link to="/">
+                <img 
+                  src="/placeholder.svg" 
+                  alt="Crop Doctor Logo" 
+                  className="w-8 h-8 text-green-500" 
+                />
+              </Link>
               <span className="text-xl font-bold">Crop Doctor</span>
             </div>
             
@@ -167,13 +178,12 @@ const Index = () => {
               <Button 
                 variant="ghost" 
                 className="flex items-center space-x-2 text-green-700"
-                onClick={() => {
-                  setActiveTab("scan");
-                  if (isMobile) setMobileNavOpen(false);
-                }}
+                asChild
               >
-                <Home size={18} />
-                <span>Home</span>
+                <Link to="/">
+                  <Home size={18} />
+                  <span>Home</span>
+                </Link>
               </Button>
               
               <Button 
@@ -183,9 +193,12 @@ const Index = () => {
                   setActiveTab("history");
                   if (isMobile) setMobileNavOpen(false);
                 }}
+                asChild
               >
-                <History size={18} />
-                <span>History</span>
+                <Link to="/history">
+                  <History size={18} />
+                  <span>History</span>
+                </Link>
               </Button>
               
               <Button 
@@ -195,9 +208,12 @@ const Index = () => {
                   setActiveTab("about");
                   if (isMobile) setMobileNavOpen(false);
                 }}
+                asChild
               >
-                <Info size={18} />
-                <span>About</span>
+                <Link to="/about">
+                  <Info size={18} />
+                  <span>About</span>
+                </Link>
               </Button>
             </div>
           </div>
@@ -208,9 +224,9 @@ const Index = () => {
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="scan" className="text-lg">Scan</TabsTrigger>
-            <TabsTrigger value="history" className="text-lg">History</TabsTrigger>
-            <TabsTrigger value="about" className="text-lg">About</TabsTrigger>
+            <TabsTrigger value="scan" className="text-lg" onClick={() => window.history.pushState(null, "", "/scan")}>Scan</TabsTrigger>
+            <TabsTrigger value="history" className="text-lg" onClick={() => window.history.pushState(null, "", "/history")}>History</TabsTrigger>
+            <TabsTrigger value="about" className="text-lg" onClick={() => window.history.pushState(null, "", "/about")}>About</TabsTrigger>
           </TabsList>
           
           {/* Scan Tab */}
@@ -424,9 +440,9 @@ const Index = () => {
               <span className="font-semibold">© 2025 Crop Doctor</span>
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="text-green-600 hover:text-green-800 transition-colors">Privacy Policy</a>
-              <a href="#" className="text-green-600 hover:text-green-800 transition-colors">Terms of Service</a>
-              <a href="#" className="text-green-600 hover:text-green-800 transition-colors">Contact</a>
+              <Link to="/" className="text-green-600 hover:text-green-800 transition-colors">Home</Link>
+              <Link to="/scan" className="text-green-600 hover:text-green-800 transition-colors">Scan</Link>
+              <Link to="/about" className="text-green-600 hover:text-green-800 transition-colors">About</Link>
             </div>
           </div>
         </div>
