@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -43,10 +42,9 @@ const Landing = () => {
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
               <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl group hover:scale-105 transition-all duration-500">
-                {/* Using a GIF related to Agritech */}
                 <img 
-                  src="https://cdn.dribbble.com/users/1162077/screenshots/4382009/media/b24708d8858c04998a79418cf7a34d08.gif" 
-                  alt="Plant growing animation" 
+                  src="https://media.giphy.com/media/l0MYzEB9J8qPOnER2/giphy.gif" 
+                  alt="Plant growth timelapse" 
                   className="w-full h-auto max-h-[400px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-green-900/70 to-transparent flex items-end transform transition-transform duration-300 group-hover:translate-y-0">
@@ -112,7 +110,7 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* How It Works Section - New Section */}
+      {/* How It Works Section */}
       <div className="py-16 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -157,7 +155,7 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Benefits Section - New Section */}
+      {/* Benefits Section */}
       <div className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -211,7 +209,7 @@ const Landing = () => {
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
               <div className="bg-white p-3 rounded-xl shadow-xl rotate-2 hover:rotate-0 transition-all duration-300">
                 <img 
-                  src="https://media.giphy.com/media/3o7TKtgCcIdbbk33l6/giphy.gif" 
+                  src="https://media.giphy.com/media/IcifS1qG3YFlS/giphy.gif" 
                   alt="Growing plants" 
                   className="w-full h-auto rounded-lg"
                 />
