@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScanHistory } from "@/types/database";
 
 type ScanResult = {
   id: string;
@@ -60,11 +61,11 @@ const Index = () => {
       }
 
       if (data) {
-        setScanHistory(data.map(item => ({
+        setScanHistory(data.map((item: ScanHistory) => ({
           id: item.id,
           image: item.image_url,
-          diagnosis: item.diagnosis,
-          advice: item.treatment,
+          diagnosis: item.diagnosis || '',
+          advice: item.treatment || '',
           date: new Date(item.created_at)
         })));
       }
@@ -130,13 +131,15 @@ const Index = () => {
       // Save to database if user is authenticated
       if (user) {
         try {
-          const { error } = await supabase.from('scan_history').insert({
-            user_id: user.id,
-            image_url: image,
-            diagnosis: diagnosisResult,
-            treatment: adviceResult,
-            confidence: Math.random() * (0.99 - 0.70) + 0.70, // Random confidence between 70-99%
-          });
+          const { error } = await supabase
+            .from('scan_history')
+            .insert({
+              user_id: user.id,
+              image_url: image,
+              diagnosis: diagnosisResult,
+              treatment: adviceResult,
+              confidence: Math.random() * (0.99 - 0.70) + 0.70, // Random confidence between 70-99%
+            });
           
           if (error) throw error;
           
