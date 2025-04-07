@@ -41,7 +41,7 @@ const HeroSection = () => {
           </div>
           <div className="rounded-2xl overflow-hidden shadow-2xl">
             <img 
-              src="https://www.google.com/imgres?q=Picture%20for%20a%20AI-Powered%20Disease%20Detection%20For%20Your%20Crops%20%F0%9F%8C%BF%20Our%20machine%20learning%20technology%20diagnoses%20plant%20diseases%20with%20up%20to%2095%25%20accuracy.%20Upload%20a%20photo%20and%20get%20expert%20treatment%20recommendations%20in%20seconds!&imgurl=https%3A%2F%2Fi.ytimg.com%2Fvi%2F90SY5wAZdbc%2Fmaxresdefault.jpg&imgrefurl=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D90SY5wAZdbc&docid=RvIv1ueq9dJ6XM&tbnid=PQB5LQ5pVXAeNM&vet=12ahUKEwiZhLC83MaMAxXKAtsEHWEsFXoQM3oECHAQAA..i&w=1280&h=720&hcb=2&ved=2ahUKEwiZhLC83MaMAxXKAtsEHWEsFXoQM3oECHAQAA" 
+              src="https://cipotato.org/wp-content/uploads/2020/03/Phone-App-2-PUT-1024x685.jpg" 
               alt="AI analyzing plants" 
               className="w-full h-auto object-cover"
             />
