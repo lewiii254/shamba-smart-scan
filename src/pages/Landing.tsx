@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Leaf, Shield, BarChart, MessageSquare, ArrowRight, Zap, Check, Sprout, Cloud, Sun, ThumbsUp } from "lucide-react";
+import { ChevronRight, Leaf, Shield, BarChart, MessageSquare, ArrowRight, Zap, Check, Sprout, Cloud, Sun, ThumbsUp, LineChart, Smartphone, Database, Users, Settings, BellRing } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/components/AuthProvider";
 
@@ -42,21 +42,15 @@ const Landing = () => {
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <div className="absolute -top-10 -left-10 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group hover:scale-105 transition-all duration-500">
-                <img 
-                  src="https://i.giphy.com/media/l3q2GfmKiUfcl7wU8/giphy.webp" 
-                  alt="AI analyzing plants" 
-                  className="w-full h-auto max-h-[400px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-green-900/70 to-transparent flex items-end transform transition-transform duration-300 group-hover:translate-y-0">
-                  <div className="p-6 text-white">
-                    <p className="font-semibold text-lg">✨ Instant Plant Diagnosis</p>
-                    <p className="text-sm text-white/90">📱 Upload a photo and get results in seconds!</p>
-                  </div>
-                </div>
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <img 
+                src="https://images.unsplash.com/photo-1581922814484-0b48460b7010?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2832" 
+                alt="AI analyzing plants" 
+                className="w-full h-auto object-cover"
+              />
+              <div className="bg-green-900/80 p-4 text-white">
+                <p className="font-semibold text-lg">✨ Instant Plant Diagnosis</p>
+                <p className="text-sm text-white/90">📱 Upload a photo and get results in seconds!</p>
               </div>
             </div>
           </div>
@@ -209,15 +203,147 @@ const Landing = () => {
               </div>
             </div>
             
-            <div className="relative">
-              <div className="absolute -top-10 -left-10 w-32 h-32 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-              <div className="bg-white p-3 rounded-xl shadow-xl rotate-2 hover:rotate-0 transition-all duration-300">
-                <img 
-                  src="https://i.giphy.com/media/fwWZ8LPJKs5fFRrqjD/giphy.webp" 
-                  alt="AI in agriculture" 
-                  className="w-full h-auto rounded-lg"
-                />
+            <div className="rounded-xl shadow-xl">
+              <img 
+                src="https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2574" 
+                alt="Smart agriculture" 
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Data Analytics Section - NEW SECTION */}
+      <div className="py-16 bg-green-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800 font-medium text-sm mb-2">📊 DATA INSIGHTS</span>
+            <h2 className="text-3xl font-bold text-green-800 mb-4">Agriculture Intelligence Platform</h2>
+            <p className="text-lg text-green-700 max-w-3xl mx-auto">
+              Get valuable insights from your crop data to make informed decisions that boost productivity and sustainability.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="border-green-100 hover:shadow-lg transition-all duration-300">
+              <CardContent className="pt-6">
+                <div className="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                  <LineChart className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Yield Prediction</h3>
+                <p className="text-green-700 text-sm">
+                  AI-powered forecasting to predict crop yields based on historical data and current conditions.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-green-100 hover:shadow-lg transition-all duration-300">
+              <CardContent className="pt-6">
+                <div className="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                  <Cloud className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Weather Integration</h3>
+                <p className="text-green-700 text-sm">
+                  Real-time weather data integration to help plan farming activities and protect your crops.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-green-100 hover:shadow-lg transition-all duration-300">
+              <CardContent className="pt-6">
+                <div className="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                  <Database className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Soil Analysis</h3>
+                <p className="text-green-700 text-sm">
+                  Track soil health metrics and receive recommendations for optimal fertilization strategies.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-green-100 hover:shadow-lg transition-all duration-300">
+              <CardContent className="pt-6">
+                <div className="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                  <Smartphone className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Mobile Monitoring</h3>
+                <p className="text-green-700 text-sm">
+                  Monitor your farm's health from anywhere using our mobile app with real-time notifications.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Enterprise Solutions Section - NEW SECTION */}
+      <div className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+            <div className="lg:col-span-3">
+              <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-800 font-medium text-sm mb-4">🏢 ENTERPRISE SOLUTIONS</span>
+              <h2 className="text-3xl font-bold text-green-800 mb-6">Powerful Tools for Commercial Farms</h2>
+              <p className="text-lg text-green-700 mb-8">
+                Our enterprise platform offers advanced features for large-scale agricultural operations, integrating seamlessly with your existing farm management systems.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="flex items-center mb-3">
+                    <Users className="h-5 w-5 text-green-600 mr-2" />
+                    <h3 className="font-semibold text-green-800">Team Management</h3>
+                  </div>
+                  <p className="text-green-700 text-sm">
+                    Collaborate with your team by sharing insights and coordinating treatment plans.
+                  </p>
+                </div>
+                
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="flex items-center mb-3">
+                    <Settings className="h-5 w-5 text-green-600 mr-2" />
+                    <h3 className="font-semibold text-green-800">API Integration</h3>
+                  </div>
+                  <p className="text-green-700 text-sm">
+                    Connect with your existing farm management software through our robust API.
+                  </p>
+                </div>
+                
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="flex items-center mb-3">
+                    <BellRing className="h-5 w-5 text-green-600 mr-2" />
+                    <h3 className="font-semibold text-green-800">Custom Alerts</h3>
+                  </div>
+                  <p className="text-green-700 text-sm">
+                    Set up tailored alert systems for different crop types and conditions.
+                  </p>
+                </div>
+                
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="flex items-center mb-3">
+                    <BarChart className="h-5 w-5 text-green-600 mr-2" />
+                    <h3 className="font-semibold text-green-800">Advanced Analytics</h3>
+                  </div>
+                  <p className="text-green-700 text-sm">
+                    Gain deeper insights with comprehensive reports and predictive analysis.
+                  </p>
+                </div>
               </div>
+              
+              <Button
+                asChild
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-md transition-all duration-300"
+              >
+                <Link to="/about">Learn About Enterprise Solutions <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+            
+            <div className="lg:col-span-2">
+              <img 
+                src="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2574" 
+                alt="Enterprise farm solutions" 
+                className="rounded-xl shadow-xl w-full h-auto"
+              />
             </div>
           </div>
         </div>
@@ -398,3 +524,4 @@ const Landing = () => {
 };
 
 export default Landing;
+
