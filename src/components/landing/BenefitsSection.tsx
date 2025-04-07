@@ -49,7 +49,7 @@ const BenefitsSection = () => {
           
           <div className="rounded-xl shadow-xl">
             <img 
-              src="https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2574" 
+              src="https://media.istockphoto.com/id/1194671122/photo/farmer-hold-a-smartphone-on-a-background-of-a-field-with-a-pepper-plantations-agricultural.webp?a=1&b=1&s=612x612&w=0&k=20&c=hfY_EczfH89vEM_HEdxAjpDMSmolFe6cEBDe0BQpKoU=" 
               alt="Smart agriculture" 
               className="w-full h-auto rounded-lg"
             />
