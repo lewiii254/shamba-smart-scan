@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, MessageSquare, Loader2, History, Info, Home, Menu, X } from "lucide-react";
+import { Upload, MessageSquare, Loader2, History, Info, Home, Menu, X, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type ScanResult = {
   id: string;
@@ -19,6 +22,8 @@ type ScanResult = {
 
 const Index = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [image, setImage] = useState<string | null>(null);
   const [advice, setAdvice] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
@@ -36,18 +41,42 @@ const Index = () => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
-  // Load scan history from localStorage on component mount
+  // Load scan history from database
   useEffect(() => {
-    const savedHistory = localStorage.getItem("scanHistory");
-    if (savedHistory) {
-      setScanHistory(JSON.parse(savedHistory));
+    if (user && activeTab === "history") {
+      fetchScanHistory();
     }
-  }, []);
+  }, [user, activeTab]);
 
-  // Save scan history to localStorage when it updates
-  useEffect(() => {
-    localStorage.setItem("scanHistory", JSON.stringify(scanHistory));
-  }, [scanHistory]);
+  const fetchScanHistory = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('scan_history')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        setScanHistory(data.map(item => ({
+          id: item.id,
+          image: item.image_url,
+          diagnosis: item.diagnosis,
+          advice: item.treatment,
+          date: new Date(item.created_at)
+        })));
+      }
+    } catch (error: any) {
+      console.error('Error fetching scan history:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load scan history',
+        variant: 'destructive'
+      });
+    }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -60,7 +89,7 @@ const Index = () => {
     }
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!image) {
       toast({
         title: "Image Required",
@@ -91,20 +120,38 @@ const Index = () => {
     // Randomly select a diagnosis
     const selectedDiagnosis = diagnoses[Math.floor(Math.random() * diagnoses.length)];
     
-    setTimeout(() => {
-      setDiagnosis(selectedDiagnosis.name);
-      setAdvice(selectedDiagnosis.advice);
+    setTimeout(async () => {
+      const diagnosisResult = selectedDiagnosis.name;
+      const adviceResult = selectedDiagnosis.advice;
       
-      // Add to history
-      const newScan: ScanResult = {
-        id: Date.now().toString(),
-        image: image,
-        diagnosis: selectedDiagnosis.name,
-        advice: selectedDiagnosis.advice,
-        date: new Date()
-      };
+      setDiagnosis(diagnosisResult);
+      setAdvice(adviceResult);
       
-      setScanHistory(prev => [newScan, ...prev].slice(0, 10)); // Keep only the 10 most recent scans
+      // Save to database if user is authenticated
+      if (user) {
+        try {
+          const { error } = await supabase.from('scan_history').insert({
+            user_id: user.id,
+            image_url: image,
+            diagnosis: diagnosisResult,
+            treatment: adviceResult,
+            confidence: Math.random() * (0.99 - 0.70) + 0.70, // Random confidence between 70-99%
+          });
+          
+          if (error) throw error;
+          
+          // Refresh scan history
+          fetchScanHistory();
+          
+        } catch (error: any) {
+          console.error('Error saving scan:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to save scan to history',
+            variant: 'destructive'
+          });
+        }
+      }
       
       toast({
         title: "Analysis Complete",
@@ -122,12 +169,30 @@ const Index = () => {
     setActiveTab("scan");
   };
 
-  const handleClearHistory = () => {
-    setScanHistory([]);
-    toast({
-      title: "History Cleared",
-      description: "Your scan history has been cleared"
-    });
+  const handleClearHistory = async () => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('scan_history')
+        .delete()
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+      
+      setScanHistory([]);
+      toast({
+        title: "History Cleared",
+        description: "Your scan history has been cleared"
+      });
+    } catch (error: any) {
+      console.error('Error clearing history:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to clear scan history',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleReset = () => {
@@ -138,6 +203,23 @@ const Index = () => {
       title: "New Scan",
       description: "Ready for a new plant scan"
     });
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate("/");
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to log out",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -174,7 +256,7 @@ const Index = () => {
               <span className="text-xl font-bold">Crop Doctor</span>
             </div>
             
-            <div className={`${isMobile ? 'flex flex-col items-center mt-20 space-y-8' : 'flex space-x-8'}`}>
+            <div className={`${isMobile ? 'flex flex-col items-center mt-20 space-y-8' : 'flex items-center space-x-4'}`}>
               <Button 
                 variant="ghost" 
                 className="flex items-center space-x-2 text-green-700"
@@ -215,6 +297,31 @@ const Index = () => {
                   <span>About</span>
                 </Link>
               </Button>
+
+              {user && (
+                <>
+                  <div className="flex items-center space-x-2 ml-4">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="" alt={user.email || ""} />
+                      <AvatarFallback className="bg-green-200 text-green-800">
+                        {user.email ? user.email.substring(0, 2).toUpperCase() : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium text-green-800 hidden md:inline">
+                      {user.email}
+                    </span>
+                  </div>
+                  
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center space-x-2 text-red-600"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={18} />
+                    <span>Logout</span>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

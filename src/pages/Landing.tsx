@@ -1,10 +1,14 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Leaf, Shield, BarChart, MessageSquare, ArrowRight, Zap, Check, Sprout, Cloud, Sun, ThumbsUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/components/AuthProvider";
 
 const Landing = () => {
+  const { user } = useAuth();
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -27,7 +31,7 @@ const Landing = () => {
                   asChild
                   className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 rounded-lg text-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
-                  <Link to="/scan">Get Started <ChevronRight className="ml-2" /></Link>
+                  <Link to={user ? "/scan" : "/auth"}>Get Started <ChevronRight className="ml-2" /></Link>
                 </Button>
                 <Button
                   asChild
@@ -43,8 +47,8 @@ const Landing = () => {
               <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl group hover:scale-105 transition-all duration-500">
                 <img 
-                  src="https://media.giphy.com/media/l0MYzEB9J8qPOnER2/giphy.gif" 
-                  alt="Plant growth timelapse" 
+                  src="https://i.giphy.com/media/l3q2GfmKiUfcl7wU8/giphy.webp" 
+                  alt="AI analyzing plants" 
                   className="w-full h-auto max-h-[400px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-green-900/70 to-transparent flex items-end transform transition-transform duration-300 group-hover:translate-y-0">
@@ -209,8 +213,8 @@ const Landing = () => {
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
               <div className="bg-white p-3 rounded-xl shadow-xl rotate-2 hover:rotate-0 transition-all duration-300">
                 <img 
-                  src="https://media.giphy.com/media/IcifS1qG3YFlS/giphy.gif" 
-                  alt="Growing plants" 
+                  src="https://i.giphy.com/media/fwWZ8LPJKs5fFRrqjD/giphy.webp" 
+                  alt="AI in agriculture" 
                   className="w-full h-auto rounded-lg"
                 />
               </div>
@@ -231,7 +235,7 @@ const Landing = () => {
               asChild
               className="bg-white text-green-600 hover:bg-green-50 text-lg px-8 py-6 rounded-lg hover:scale-105 transition-all duration-300 shadow-lg"
             >
-              <Link to="/scan">
+              <Link to={user ? "/scan" : "/auth"}>
                 Start Scanning Now
                 <Zap className="ml-2" />
               </Link>
