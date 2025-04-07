@@ -41,7 +41,7 @@ const HeroSection = () => {
           </div>
           <div className="rounded-2xl overflow-hidden shadow-2xl">
             <img 
-              src="https://images.unsplash.com/photo-1581922814484-0b48460b7010?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2832" 
+              src="/download (16).jpeg" 
               alt="AI analyzing plants" 
               className="w-full h-auto object-cover"
             />
