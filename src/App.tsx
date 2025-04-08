@@ -9,6 +9,7 @@ import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import SpecialistChat from "./pages/SpecialistChat";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
 
@@ -38,6 +39,11 @@ const App = () => {
                 </RequireAuth>
               } />
               <Route path="/about" element={<Index />} />
+              <Route path="/specialist-chat" element={
+                <RequireAuth>
+                  <SpecialistChat />
+                </RequireAuth>
+              } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
