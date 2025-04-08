@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,7 +65,6 @@ const diseases = [
 
 const Index = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [image, setImage] = useState<string | null>(null);
   const [advice, setAdvice] = useState<string | null>(null);
