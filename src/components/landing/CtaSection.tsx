@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Zap, ArrowRight } from "lucide-react";
+import { Zap, ArrowRight, MessageSquare } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 
 const CtaSection = () => {
@@ -30,9 +30,9 @@ const CtaSection = () => {
             variant="outline"
             className="border-white text-white hover:bg-white/10 px-8 py-6 rounded-lg text-lg"
           >
-            <Link to="/about">
-              Learn About Our Technology
-              <ArrowRight className="ml-2" />
+            <Link to="/specialist-chat">
+              Chat With Agricultural Experts
+              <MessageSquare className="ml-2" />
             </Link>
           </Button>
         </div>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, X, Home, History, Info, LogOut } from "lucide-react";
+import { Menu, X, Home, History, Info, LogOut, MessageSquare } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
@@ -81,20 +81,39 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
                 </Link>
               </Button>
               
-              <Button 
-                variant="ghost" 
-                className="flex items-center space-x-2 text-green-700"
-                onClick={() => {
-                  setActiveTab("history");
-                  if (isMobile) setMobileNavOpen(false);
-                }}
-                asChild
-              >
-                <Link to="/history">
-                  <History size={18} />
-                  <span>History</span>
-                </Link>
-              </Button>
+              {user && (
+                <>
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center space-x-2 text-green-700"
+                    onClick={() => {
+                      setActiveTab("history");
+                      if (isMobile) setMobileNavOpen(false);
+                    }}
+                    asChild
+                  >
+                    <Link to="/history">
+                      <History size={18} />
+                      <span>History</span>
+                    </Link>
+                  </Button>
+                  
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center space-x-2 text-green-700"
+                    onClick={() => {
+                      setActiveTab("specialist-chat");
+                      if (isMobile) setMobileNavOpen(false);
+                    }}
+                    asChild
+                  >
+                    <Link to="/specialist-chat">
+                      <MessageSquare size={18} />
+                      <span>Chat with Experts</span>
+                    </Link>
+                  </Button>
+                </>
+              )}
               
               <Button 
                 variant="ghost" 

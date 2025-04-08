@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare, ArrowRightCircle, AlertTriangle, Leaf, Droplet, Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 interface DiagnosisResultProps {
   isLoading: boolean;
@@ -152,9 +153,12 @@ const DiagnosisResult = ({
             </Button>
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => window.location.href = "/specialist-chat"}
+              asChild
             >
-              Consult Agricultural Specialist
+              <Link to="/specialist-chat">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Consult Agricultural Specialist
+              </Link>
             </Button>
           </>
         )}
