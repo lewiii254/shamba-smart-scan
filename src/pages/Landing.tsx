@@ -12,11 +12,13 @@ import FooterSection from "@/components/landing/FooterSection";
 import { useAuth } from "@/components/AuthProvider";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, User, ArrowRight } from "lucide-react";
+import { MessageSquare, ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Landing = () => {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -25,7 +27,7 @@ const Landing = () => {
       <WorkflowSection />
       <BenefitsSection />
       
-      {/* New Expert Chat Section */}
+      {/* Expert Chat Section - updated for mobile */}
       <div className="py-16 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -33,14 +35,14 @@ const Landing = () => {
               👩‍🌾 LIVE EXPERT CONSULTATIONS
             </span>
             <h2 className="text-3xl font-bold text-green-800 mb-4">
-              Connect with Agricultural Specialists in Real-Time
+              Connect with Agricultural Specialists
             </h2>
             <p className="text-lg text-green-700 max-w-3xl mx-auto">
               Get personalized advice from experienced plant pathologists, botanical researchers, and agricultural scientists.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className={`grid grid-cols-1 ${isMobile ? '' : 'md:grid-cols-3'} gap-8 mb-12`}>
             {/* Expert Cards */}
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="p-6">
@@ -103,7 +105,7 @@ const Landing = () => {
           <div className="text-center">
             <Button
               asChild
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-6 rounded-lg text-lg shadow-lg transition-all duration-300"
+              className={`bg-green-600 hover:bg-green-700 text-white ${isMobile ? 'px-4 py-4 text-base w-full' : 'px-6 py-6 rounded-lg text-lg'} shadow-lg transition-all duration-300`}
             >
               <Link to={user ? "/specialist-chat" : "/auth"}>
                 <MessageSquare className="mr-2" />
@@ -112,7 +114,7 @@ const Landing = () => {
               </Link>
             </Button>
             <p className="mt-4 text-green-700">
-              Get immediate answers to your specific plant health questions from real experts
+              Get immediate answers to your specific plant health questions
             </p>
           </div>
         </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,6 +19,16 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Add scroll effect for navigation
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -55,9 +65,10 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
       <nav className={`
         ${isMobile ? 'fixed inset-0 z-40 bg-white/95 backdrop-blur-sm transform transition-transform duration-300 ease-in-out' : 'sticky top-0 bg-white/80 backdrop-blur-md shadow-sm z-10'}
         ${isMobile && !mobileNavOpen ? '-translate-x-full' : 'translate-x-0'}
+        ${scrolled ? 'shadow-md' : ''}
       `}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className={`flex items-center ${isMobile ? 'justify-center' : 'justify-between'} h-16`}>
             <div className="flex items-center space-x-2 text-green-700">
               <Link to="/">
                 <img 
@@ -69,15 +80,18 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
               <span className="text-xl font-bold">Crop Doctor</span>
             </div>
             
-            <div className={`${isMobile ? 'flex flex-col items-center mt-20 space-y-8' : 'flex items-center space-x-4'}`}>
+            <div className={`${isMobile ? 'flex flex-col items-center mt-20 space-y-6' : 'flex items-center space-x-4'}`}>
               <Button 
                 variant="ghost" 
-                className="flex items-center space-x-2 text-green-700"
+                className={`flex items-center space-x-2 text-green-700 ${isMobile ? 'w-full justify-center py-4' : ''}`}
+                onClick={() => {
+                  if (isMobile) setMobileNavOpen(false);
+                }}
                 asChild
               >
                 <Link to="/">
-                  <Home size={18} />
-                  <span>Home</span>
+                  <Home size={isMobile ? 22 : 18} />
+                  <span className={isMobile ? "text-lg ml-2" : "ml-2"}>Home</span>
                 </Link>
               </Button>
               
@@ -85,7 +99,7 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
                 <>
                   <Button 
                     variant="ghost" 
-                    className="flex items-center space-x-2 text-green-700"
+                    className={`flex items-center space-x-2 text-green-700 ${isMobile ? 'w-full justify-center py-4' : ''}`}
                     onClick={() => {
                       setActiveTab("history");
                       if (isMobile) setMobileNavOpen(false);
@@ -93,14 +107,14 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
                     asChild
                   >
                     <Link to="/history">
-                      <History size={18} />
-                      <span>History</span>
+                      <History size={isMobile ? 22 : 18} />
+                      <span className={isMobile ? "text-lg ml-2" : "ml-2"}>History</span>
                     </Link>
                   </Button>
                   
                   <Button 
                     variant="ghost" 
-                    className="flex items-center space-x-2 text-green-700"
+                    className={`flex items-center space-x-2 text-green-700 ${isMobile ? 'w-full justify-center py-4' : ''}`}
                     onClick={() => {
                       setActiveTab("specialist-chat");
                       if (isMobile) setMobileNavOpen(false);
@@ -108,8 +122,8 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
                     asChild
                   >
                     <Link to="/specialist-chat">
-                      <MessageSquare size={18} />
-                      <span>Chat with Experts</span>
+                      <MessageSquare size={isMobile ? 22 : 18} />
+                      <span className={isMobile ? "text-lg ml-2" : "ml-2"}>Expert Chat</span>
                     </Link>
                   </Button>
                 </>
@@ -117,7 +131,7 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
               
               <Button 
                 variant="ghost" 
-                className="flex items-center space-x-2 text-green-700"
+                className={`flex items-center space-x-2 text-green-700 ${isMobile ? 'w-full justify-center py-4' : ''}`}
                 onClick={() => {
                   setActiveTab("about");
                   if (isMobile) setMobileNavOpen(false);
@@ -125,33 +139,60 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
                 asChild
               >
                 <Link to="/about">
-                  <Info size={18} />
-                  <span>About</span>
+                  <Info size={isMobile ? 22 : 18} />
+                  <span className={isMobile ? "text-lg ml-2" : "ml-2"}>About</span>
                 </Link>
               </Button>
 
               {user && (
                 <>
-                  <div className="flex items-center space-x-2 ml-4">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src="" alt={user.email || ""} />
-                      <AvatarFallback className="bg-green-200 text-green-800">
-                        {user.email ? user.email.substring(0, 2).toUpperCase() : "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium text-green-800 hidden md:inline">
-                      {user.email}
-                    </span>
-                  </div>
-                  
-                  <Button 
-                    variant="ghost" 
-                    className="flex items-center space-x-2 text-red-600"
-                    onClick={handleLogout}
-                  >
-                    <LogOut size={18} />
-                    <span>Logout</span>
-                  </Button>
+                  {isMobile ? (
+                    <div className="flex flex-col items-center space-y-4 mt-6 border-t border-green-100 pt-6 w-full">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src="" alt={user.email || ""} />
+                        <AvatarFallback className="bg-green-200 text-green-800 text-lg">
+                          {user.email ? user.email.substring(0, 2).toUpperCase() : "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-base font-medium text-green-800">
+                        {user.email}
+                      </span>
+                      <Button 
+                        variant="outline" 
+                        className="flex items-center space-x-2 text-red-600 w-3/4 justify-center mt-2"
+                        onClick={() => {
+                          handleLogout();
+                          if (isMobile) setMobileNavOpen(false);
+                        }}
+                      >
+                        <LogOut size={18} />
+                        <span>Logout</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="" alt={user.email || ""} />
+                          <AvatarFallback className="bg-green-200 text-green-800">
+                            {user.email ? user.email.substring(0, 2).toUpperCase() : "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-sm font-medium text-green-800 hidden md:inline">
+                          {user.email}
+                        </span>
+                      </div>
+                      
+                      <Button 
+                        variant="ghost" 
+                        className="flex items-center space-x-2 text-red-600"
+                        onClick={handleLogout}
+                      >
+                        <LogOut size={18} />
+                        <span>Logout</span>
+                      </Button>
+                    </>
+                  )}
                 </>
               )}
             </div>

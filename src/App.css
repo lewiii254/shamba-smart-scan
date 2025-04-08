@@ -1,8 +1,10 @@
+
+/* Remove the max-width constraint for mobile */
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
 }
 
 .logo {
@@ -39,4 +41,34 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Add responsive utilities */
+.mobile-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 768px) {
+  .mobile-full-width {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .mobile-stack {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mobile-text-center {
+    text-align: center;
+  }
+  
+  .mobile-hidden {
+    display: none;
+  }
+  
+  .mobile-visible {
+    display: block;
+  }
 }

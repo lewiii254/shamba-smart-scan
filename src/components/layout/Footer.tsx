@@ -2,8 +2,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MessageSquare, Leaf, Info, Clock, Users, Phone, Mail, MapPin } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Footer = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <footer className="bg-white/80 backdrop-blur-md py-8 border-t border-green-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,7 +41,7 @@ const Footer = () => {
 
           <div>
             <h3 className="text-lg font-semibold text-green-800 mb-4">Quick Links</h3>
-            <div className="grid grid-cols-1 gap-2">
+            <div className={`grid grid-cols-${isMobile ? '2' : '1'} gap-2`}>
               <Link to="/" className="text-green-600 hover:text-green-800 transition-colors flex items-center">
                 <Leaf className="h-4 w-4 mr-2" />
                 <span>Home</span>
@@ -61,8 +64,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-green-800 mb-4">Contact Us</h3>
             <div className="space-y-3">
-              <div className="flex items-center text-green-600">
-                <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+              <div className="flex items-start text-green-600">
+                <MapPin className="h-4 w-4 mr-2 flex-shrink-0 mt-1" />
                 <span className="text-sm">123 Farm Road, AgTech Valley, CA 94025</span>
               </div>
               <div className="flex items-center text-green-600">
@@ -83,8 +86,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t border-green-100">
-          <div className="text-green-700 mb-4 md:mb-0">
+        <div className={`flex flex-col ${isMobile ? 'space-y-4' : 'md:flex-row'} justify-between items-center pt-4 border-t border-green-100`}>
+          <div className="text-green-700">
             <span className="font-semibold">© 2025 Crop Doctor</span>
           </div>
           <div className="flex gap-4 md:gap-6">
