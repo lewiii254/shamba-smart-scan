@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,16 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Send, PhoneCall, Loader2 } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import SpecialistsList from "./SpecialistsList";
-
-interface Specialist {
-  id: string;
-  name: string;
-  role: string;
-  specialty: string;
-  avatar: string;
-  status: "online" | "away";
-  bio: string;
-}
+import { Specialist } from "@/data/specialists";
 
 interface Message {
   id: string;
@@ -52,7 +42,6 @@ const ChatInterface = ({ specialists, selectedSpecialist, handleSpecialistSelect
   }, [messages]);
 
   useEffect(() => {
-    // Reset messages when specialist changes
     setMessages([
       {
         id: "welcome-new",
@@ -71,7 +60,6 @@ const ChatInterface = ({ specialists, selectedSpecialist, handleSpecialistSelect
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
-    // Add user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       sender: "You",
@@ -84,7 +72,6 @@ const ChatInterface = ({ specialists, selectedSpecialist, handleSpecialistSelect
     setNewMessage("");
     setIsSending(true);
     
-    // Simulate specialist response after a delay
     setTimeout(() => {
       const specialistResponse: Message = {
         id: `specialist-${Date.now()}`,
@@ -100,7 +87,6 @@ const ChatInterface = ({ specialists, selectedSpecialist, handleSpecialistSelect
   };
 
   const getSpecialistResponse = (userMessage: string): string => {
-    // Simple response logic - in a real app this would be a real chat system
     const lowerMessage = userMessage.toLowerCase();
     
     if (lowerMessage.includes("disease") || lowerMessage.includes("sick") || lowerMessage.includes("dying")) {

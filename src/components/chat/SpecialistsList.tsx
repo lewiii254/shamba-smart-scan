@@ -1,16 +1,6 @@
-
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-interface Specialist {
-  id: string;
-  name: string;
-  role: string;
-  specialty: string;
-  avatar: string;
-  status: "online" | "away";
-  bio: string;
-}
+import { Specialist } from "@/data/specialists";
 
 interface SpecialistsListProps {
   specialists: Specialist[];

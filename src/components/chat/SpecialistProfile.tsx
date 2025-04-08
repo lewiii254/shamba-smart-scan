@@ -1,19 +1,9 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
-interface Specialist {
-  id: string;
-  name: string;
-  role: string;
-  specialty: string;
-  avatar: string;
-  status: "online" | "away";
-  bio: string;
-}
+import { Specialist } from "@/data/specialists";
 
 interface SpecialistProfileProps {
   specialist: Specialist;

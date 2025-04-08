@@ -1,5 +1,17 @@
 
-export const specialists = [
+export type SpecialistStatus = "online" | "away";
+
+export interface Specialist {
+  id: string;
+  name: string;
+  role: string;
+  specialty: string;
+  avatar: string;
+  status: SpecialistStatus;
+  bio: string;
+}
+
+export const specialists: Specialist[] = [
   {
     id: "s1",
     name: "Dr. Maria Rodriguez",

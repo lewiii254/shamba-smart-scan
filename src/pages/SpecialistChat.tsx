@@ -5,13 +5,13 @@ import Footer from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ChatInterface from "@/components/chat/ChatInterface";
 import SpecialistProfile from "@/components/chat/SpecialistProfile";
-import { specialists } from "@/data/specialists";
+import { specialists, Specialist } from "@/data/specialists";
 
 const SpecialistChat = () => {
   const [activeTab, setActiveTab] = useState("chat");
-  const [selectedSpecialist, setSelectedSpecialist] = useState(specialists[0]);
+  const [selectedSpecialist, setSelectedSpecialist] = useState<Specialist>(specialists[0]);
 
-  const handleSpecialistSelect = (specialist: typeof specialists[0]) => {
+  const handleSpecialistSelect = (specialist: Specialist) => {
     setSelectedSpecialist(specialist);
   };
 
