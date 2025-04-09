@@ -1,25 +1,30 @@
-
 import React, { useState, useEffect } from "react";
 import { forumPosts } from "@/data/forumPosts";
 import ForumHeader from "@/components/forum/ForumHeader";
 import ForumCategories from "@/components/forum/ForumCategories";
 import PostCard from "@/components/forum/PostCard";
 import PostDetail from "@/components/forum/PostDetail";
-import { ForumCategory, ForumPost } from "@/types/forum";
+import WeatherWidget from "@/components/weather/WeatherWidget";
+import { ForumCategory, ForumPost, NewPostData } from "@/types/forum";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navigation from "@/components/layout/Navigation";
 import FooterSection from "@/components/landing/FooterSection";
+import { useAuth } from "@/components/AuthProvider";
+import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const CommunityForum: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("");
   const [activeCategory, setActiveCategory] = useState<ForumCategory>('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [posts, setPosts] = useState<ForumPost[]>(forumPosts);
   const [filteredPosts, setFilteredPosts] = useState<ForumPost[]>(forumPosts);
   
-  // Get post ID from URL if present
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const postId = params.get('post');
@@ -28,18 +33,15 @@ const CommunityForum: React.FC = () => {
     }
   }, [location.search]);
   
-  // Filter posts based on category and search query
   useEffect(() => {
-    let filtered = [...forumPosts];
+    let filtered = [...posts];
     
-    // Filter by category
     if (activeCategory !== 'all') {
       filtered = filtered.filter(post => 
         post.tags.includes(activeCategory)
       );
     }
     
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(post => 
@@ -50,7 +52,7 @@ const CommunityForum: React.FC = () => {
     }
     
     setFilteredPosts(filtered);
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, posts]);
   
   const handlePostClick = (postId: string) => {
     setSelectedPostId(postId);
@@ -61,8 +63,39 @@ const CommunityForum: React.FC = () => {
     setSelectedPostId(null);
     navigate('/community-forum');
   };
+
+  const handleNewPost = (postData: NewPostData) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create a post",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newPost: ForumPost = {
+      id: `temp-${Date.now()}`,
+      title: postData.title,
+      content: postData.content,
+      authorId: user.id || 'unknown',
+      authorName: user.user_metadata?.full_name || user.email || 'Anonymous',
+      authorAvatar: user.user_metadata?.avatar_url,
+      createdAt: new Date().toISOString(),
+      tags: postData.tags,
+      likes: 0,
+      comments: []
+    };
+
+    setPosts([newPost, ...posts]);
+    
+    toast({
+      title: "Success",
+      description: "Your post has been published successfully!",
+    });
+  };
   
-  const selectedPost = forumPosts.find(post => post.id === selectedPostId);
+  const selectedPost = posts.find(post => post.id === selectedPostId);
   
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -73,28 +106,63 @@ const CommunityForum: React.FC = () => {
           <PostDetail post={selectedPost} onBack={handleBackClick} />
         ) : (
           <>
-            <ForumHeader onSearch={setSearchQuery} />
-            <ForumCategories 
-              activeCategory={activeCategory} 
-              onCategoryChange={setActiveCategory} 
-            />
+            <ForumHeader onSearch={setSearchQuery} onNewPost={handleNewPost} />
             
-            {filteredPosts.length > 0 ? (
-              <div className="space-y-4">
-                {filteredPosts.map(post => (
-                  <PostCard 
-                    key={post.id} 
-                    post={post} 
-                    onClick={handlePostClick} 
-                  />
-                ))}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <ForumCategories 
+                  activeCategory={activeCategory} 
+                  onCategoryChange={setActiveCategory} 
+                />
+                
+                {filteredPosts.length > 0 ? (
+                  <div className="space-y-4">
+                    {filteredPosts.map(post => (
+                      <PostCard 
+                        key={post.id} 
+                        post={post} 
+                        onClick={handlePostClick} 
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-xl text-green-700">No posts found matching your criteria</p>
+                    <p className="text-gray-600 mt-2">Try adjusting your search or category filters</p>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-xl text-green-700">No posts found matching your criteria</p>
-                <p className="text-gray-600 mt-2">Try adjusting your search or category filters</p>
+              
+              <div className="lg:col-span-1">
+                <WeatherWidget />
+                
+                <Card className="bg-white/90 border-green-100">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg text-green-800">Forum Guidelines</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex gap-2">
+                        <span className="text-green-600 font-bold">•</span>
+                        <span>Be respectful and supportive of other community members</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600 font-bold">•</span>
+                        <span>Use appropriate categories for your posts</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600 font-bold">•</span>
+                        <span>Include clear information when asking for help</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600 font-bold">•</span>
+                        <span>Share your successes and what you've learned</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
               </div>
-            )}
+            </div>
           </>
         )}
       </main>

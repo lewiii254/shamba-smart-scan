@@ -1,18 +1,37 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
+import NewPostModal from "./NewPostModal";
+import { NewPostData } from "@/types/forum";
+import { useToast } from "@/hooks/use-toast";
 
 interface ForumHeaderProps {
   onSearch: (query: string) => void;
+  onNewPost?: (post: NewPostData) => void;
 }
 
-const ForumHeader: React.FC<ForumHeaderProps> = ({ onSearch }) => {
+const ForumHeader: React.FC<ForumHeaderProps> = ({ onSearch, onNewPost }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
+  const { toast } = useToast();
+  
+  const handleNewPostSubmit = (postData: NewPostData) => {
+    if (onNewPost) {
+      onNewPost(postData);
+    } else {
+      // If no onNewPost handler is provided, show a toast message
+      toast({
+        title: "Post created",
+        description: "Your post has been successfully created!",
+      });
+    }
+    setIsNewPostModalOpen(false);
+  };
   
   return (
     <div className="mb-8">
@@ -25,7 +44,7 @@ const ForumHeader: React.FC<ForumHeaderProps> = ({ onSearch }) => {
         {user && (
           <Button 
             className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-            onClick={() => alert("New post functionality would be implemented here")}
+            onClick={() => setIsNewPostModalOpen(true)}
           >
             <Plus className="h-5 w-5" />
             <span>New Post</span>
@@ -41,6 +60,12 @@ const ForumHeader: React.FC<ForumHeaderProps> = ({ onSearch }) => {
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
+
+      <NewPostModal 
+        isOpen={isNewPostModalOpen}
+        onClose={() => setIsNewPostModalOpen(false)}
+        onSubmit={handleNewPostSubmit}
+      />
     </div>
   );
 };
