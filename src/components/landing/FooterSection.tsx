@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Sprout, Cloud, Sun, MessageSquare, BookOpen } from "lucide-react";
+import { Sprout, Cloud, Sun, MessageSquare, BookOpen, Users } from "lucide-react";
 
 const FooterSection = () => {
   return (
@@ -33,6 +33,7 @@ const FooterSection = () => {
               <li><Link to="/" className="text-green-600 hover:text-green-800 transition-colors">Home</Link></li>
               <li><Link to="/scan" className="text-green-600 hover:text-green-800 transition-colors">Scan Plants</Link></li>
               <li><Link to="/disease-library" className="text-green-600 hover:text-green-800 transition-colors">Disease Library</Link></li>
+              <li><Link to="/community-forum" className="text-green-600 hover:text-green-800 transition-colors">Community Forum</Link></li>
               <li><Link to="/specialist-chat" className="text-green-600 hover:text-green-800 transition-colors">Chat with Experts</Link></li>
               <li><Link to="/history" className="text-green-600 hover:text-green-800 transition-colors">Scan History</Link></li>
               <li><Link to="/about" className="text-green-600 hover:text-green-800 transition-colors">About Us</Link></li>
@@ -60,6 +61,12 @@ const FooterSection = () => {
                 <BookOpen className="h-5 w-5 text-green-600 mr-2" />
                 <Link to="/disease-library" className="hover:text-green-800 transition-colors">
                   Disease Encyclopedia
+                </Link>
+              </li>
+              <li className="flex items-center text-green-700">
+                <Users className="h-5 w-5 text-green-600 mr-2" />
+                <Link to="/community-forum" className="hover:text-green-800 transition-colors">
+                  Community Forum
                 </Link>
               </li>
             </ul>
