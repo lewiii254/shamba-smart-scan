@@ -12,7 +12,7 @@ import FooterSection from "@/components/landing/FooterSection";
 import { useAuth } from "@/components/AuthProvider";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, ArrowRight } from "lucide-react";
+import { MessageSquare, ArrowRight, BookOpen } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -26,6 +26,93 @@ const Landing = () => {
       <FeatureSection />
       <WorkflowSection />
       <BenefitsSection />
+      
+      {/* Disease Library Section */}
+      <div className="py-16 bg-blue-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-medium text-sm mb-2">
+              📚 PLANT DISEASE ENCYCLOPEDIA
+            </span>
+            <h2 className="text-3xl font-bold text-blue-800 mb-4">
+              Comprehensive Disease Library
+            </h2>
+            <p className="text-lg text-blue-700 max-w-3xl mx-auto">
+              Access our extensive database of plant diseases, complete with detailed symptoms, causes, and treatment options.
+            </p>
+          </div>
+          
+          <div className={`grid grid-cols-1 ${isMobile ? '' : 'md:grid-cols-2'} gap-8 mb-12 items-center`}>
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-blue-800 mb-4">Disease Encyclopedia Features</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3 text-blue-600 font-bold">1</span>
+                    <span className="text-blue-700">Searchable database of 100+ common plant diseases</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3 text-blue-600 font-bold">2</span>
+                    <span className="text-blue-700">Detailed symptoms and identification guides</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3 text-blue-600 font-bold">3</span>
+                    <span className="text-blue-700">Evidence-based treatment recommendations</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3 text-blue-600 font-bold">4</span>
+                    <span className="text-blue-700">Categorized by plant type and disease category</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3 text-blue-600 font-bold">5</span>
+                    <span className="text-blue-700">Prevention guides and best practices</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-blue-800 mb-4">Browse by Category</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 mb-2">Fungal Diseases</h4>
+                    <p className="text-sm text-blue-700">Powdery mildew, black spot, rust, late blight and more</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-green-800 mb-2">Bacterial Diseases</h4>
+                    <p className="text-sm text-green-700">Bacterial leaf spot, fire blight, crown gall and more</p>
+                  </div>
+                  <div className="bg-yellow-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-yellow-800 mb-2">Viral Diseases</h4>
+                    <p className="text-sm text-yellow-700">Mosaic virus, ringspot, curly top virus and more</p>
+                  </div>
+                  <div className="bg-red-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-red-800 mb-2">Pest Damage</h4>
+                    <p className="text-sm text-red-700">Aphids, spider mites, thrips, scale insects and more</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <Button
+              asChild
+              className={`bg-blue-600 hover:bg-blue-700 text-white ${isMobile ? 'px-4 py-4 text-base w-full' : 'px-6 py-6 rounded-lg text-lg'} shadow-lg transition-all duration-300`}
+            >
+              <Link to="/disease-library">
+                <BookOpen className="mr-2" />
+                Explore Disease Library
+                <ArrowRight className="ml-2" />
+              </Link>
+            </Button>
+            <p className="mt-4 text-blue-700">
+              Free access to our comprehensive plant disease reference
+            </p>
+          </div>
+        </div>
+      </div>
       
       {/* Expert Chat Section - updated for mobile */}
       <div className="py-16 bg-green-50">

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { MessageSquare, Leaf, Info, Clock, Users, Phone, Mail, MapPin } from "lucide-react";
+import { MessageSquare, Leaf, Info, Clock, Users, Phone, Mail, MapPin, BookOpen } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Footer = () => {
@@ -49,6 +49,10 @@ const Footer = () => {
               <Link to="/scan" className="text-green-600 hover:text-green-800 transition-colors flex items-center">
                 <Clock className="h-4 w-4 mr-2" />
                 <span>Scan Plants</span>
+              </Link>
+              <Link to="/disease-library" className="text-green-600 hover:text-green-800 transition-colors flex items-center">
+                <BookOpen className="h-4 w-4 mr-2" />
+                <span>Disease Library</span>
               </Link>
               <Link to="/specialist-chat" className="text-green-600 hover:text-green-800 transition-colors flex items-center font-medium">
                 <MessageSquare className="h-4 w-4 mr-2" />

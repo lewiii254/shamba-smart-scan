@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import SpecialistChat from "./pages/SpecialistChat";
+import DiseaseLibrary from "./pages/DiseaseLibrary";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
 
@@ -44,6 +45,7 @@ const App = () => {
                   <SpecialistChat />
                 </RequireAuth>
               } />
+              <Route path="/disease-library" element={<DiseaseLibrary />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
