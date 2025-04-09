@@ -85,16 +85,22 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
       return;
     }
 
+    // Call the onSubmit callback with the form data
     onSubmit({
       title,
       content,
       tags
     });
 
-    // Reset form fields
+    // Reset form fields after successful submission
     setTitle("");
     setContent("");
     setTags([]);
+    
+    toast({
+      title: "Success",
+      description: "Your post has been created successfully!",
+    });
   };
 
   return (

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { forumPosts } from "@/data/forumPosts";
 import ForumHeader from "@/components/forum/ForumHeader";
@@ -18,12 +19,17 @@ const CommunityForum: React.FC = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState("forum");
   const [activeCategory, setActiveCategory] = useState<ForumCategory>('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [posts, setPosts] = useState<ForumPost[]>(forumPosts);
   const [filteredPosts, setFilteredPosts] = useState<ForumPost[]>(forumPosts);
+  
+  // Update the active tab
+  useEffect(() => {
+    setActiveTab("community-forum");
+  }, []);
   
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -71,6 +77,7 @@ const CommunityForum: React.FC = () => {
         description: "You must be logged in to create a post",
         variant: "destructive"
       });
+      navigate('/auth');
       return;
     }
 
@@ -93,6 +100,11 @@ const CommunityForum: React.FC = () => {
       title: "Success",
       description: "Your post has been published successfully!",
     });
+    
+    // Navigate to the newly created post
+    setTimeout(() => {
+      handlePostClick(newPost.id);
+    }, 300);
   };
   
   const selectedPost = posts.find(post => post.id === selectedPostId);

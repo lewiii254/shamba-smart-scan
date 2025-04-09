@@ -5,12 +5,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { WeatherData } from "@/types/forum";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CloudSun, CloudRain, Wind, Droplets } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const WeatherWidget: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState("New York");
   const [error, setError] = useState("");
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -72,6 +74,12 @@ const WeatherWidget: React.FC = () => {
           }
         };
         
+        // Show toast to confirm data is loading
+        toast({
+          title: "Weather Data",
+          description: "Weather data has been loaded successfully for " + location,
+        });
+        
         // Simulate network delay
         setTimeout(() => {
           setWeather(mockWeatherData);
@@ -80,11 +88,16 @@ const WeatherWidget: React.FC = () => {
       } catch (err) {
         setError("Failed to fetch weather data");
         setLoading(false);
+        toast({
+          title: "Error",
+          description: "Failed to fetch weather data",
+          variant: "destructive"
+        });
       }
     };
 
     fetchWeather();
-  }, [location]);
+  }, [location, toast]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

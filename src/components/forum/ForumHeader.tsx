@@ -21,8 +21,22 @@ const ForumHeader: React.FC<ForumHeaderProps> = ({ onSearch, onNewPost }) => {
   const { toast } = useToast();
   
   const handleNewPostSubmit = (postData: NewPostData) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create a post",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+    
     if (onNewPost) {
       onNewPost(postData);
+      toast({
+        title: "Success",
+        description: "Your post has been successfully created!",
+      });
     } else {
       // If no onNewPost handler is provided, show a toast message
       toast({
@@ -41,15 +55,23 @@ const ForumHeader: React.FC<ForumHeaderProps> = ({ onSearch, onNewPost }) => {
           <p className="text-green-600 mt-1">Share and learn from fellow growers</p>
         </div>
         
-        {user && (
-          <Button 
-            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-            onClick={() => setIsNewPostModalOpen(true)}
-          >
-            <Plus className="h-5 w-5" />
-            <span>New Post</span>
-          </Button>
-        )}
+        <Button 
+          className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+          onClick={() => {
+            if (user) {
+              setIsNewPostModalOpen(true);
+            } else {
+              toast({
+                title: "Login Required",
+                description: "You need to log in to create a post",
+              });
+              navigate('/auth');
+            }
+          }}
+        >
+          <Plus className="h-5 w-5" />
+          <span>New Post</span>
+        </Button>
       </div>
       
       <div className="relative">
