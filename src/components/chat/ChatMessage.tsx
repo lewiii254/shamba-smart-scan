@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Clock } from "lucide-react";
+import { User, Clock, Bot } from "lucide-react";
 
 interface Message {
   id: string;
@@ -15,20 +15,27 @@ interface ChatMessageProps {
   message: Message;
   specialistAvatar: string;
   specialistName: string;
+  isAI?: boolean;
 }
 
-const ChatMessage = ({ message, specialistAvatar, specialistName }: ChatMessageProps) => {
+const ChatMessage = ({ message, specialistAvatar, specialistName, isAI }: ChatMessageProps) => {
   return (
     <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
       {!message.isUser && (
         <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
           <AvatarImage src={specialistAvatar} />
-          <AvatarFallback>{specialistName.charAt(0)}</AvatarFallback>
+          <AvatarFallback>{isAI ? <Bot className="h-4 w-4" /> : specialistName.charAt(0)}</AvatarFallback>
         </Avatar>
       )}
       <div>
         <div 
-          className={`max-w-xs sm:max-w-md px-4 py-2 rounded-lg ${message.isUser ? 'bg-blue-500 text-white' : 'bg-white border border-gray-200'}`}
+          className={`max-w-xs sm:max-w-md px-4 py-2 rounded-lg ${
+            message.isUser 
+              ? 'bg-blue-500 text-white' 
+              : isAI 
+                ? 'bg-blue-50 border border-blue-200 text-gray-800' 
+                : 'bg-white border border-gray-200'
+          }`}
         >
           {message.text}
         </div>
