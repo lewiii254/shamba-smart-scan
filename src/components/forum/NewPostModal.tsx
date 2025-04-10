@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { NewPostData, ForumCategory } from "@/types/forum";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +23,9 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
+  const [tagsError, setTagsError] = useState("");
   const { user } = useAuth();
   const { toast } = useToast();
   
@@ -38,6 +41,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
     if (tag && !tags.includes(tag)) {
       setTags([...tags, tag]);
       setTag("");
+      setTagsError("");
     }
   };
 
@@ -55,7 +59,35 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
   const handleSelectCategory = (category: string) => {
     if (!tags.includes(category)) {
       setTags([...tags, category]);
+      setTagsError("");
     }
+  };
+  
+  const validateForm = () => {
+    let isValid = true;
+    
+    if (!title.trim()) {
+      setTitleError("Please enter a title for your post");
+      isValid = false;
+    } else {
+      setTitleError("");
+    }
+    
+    if (!content.trim()) {
+      setContentError("Please enter content for your post");
+      isValid = false;
+    } else {
+      setContentError("");
+    }
+    
+    if (tags.length === 0) {
+      setTagsError("Please add at least one tag or category");
+      isValid = false;
+    } else {
+      setTagsError("");
+    }
+    
+    return isValid;
   };
   
   const resetForm = () => {
@@ -63,34 +95,14 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
     setContent("");
     setTags([]);
     setTag("");
+    setTitleError("");
+    setContentError("");
+    setTagsError("");
     setIsSubmitting(false);
   };
 
   const handleSubmit = () => {
-    if (!title.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a title for your post",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!content.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter content for your post",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (tags.length === 0) {
-      toast({
-        title: "Error",
-        description: "Please add at least one tag",
-        variant: "destructive"
-      });
+    if (!validateForm()) {
       return;
     }
     
@@ -104,8 +116,15 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
         tags
       });
       
+      toast({
+        title: "Success",
+        description: "Your post has been created successfully!",
+        variant: "default",
+      });
+      
       // Reset form after successful submission
       resetForm();
+      onClose();
       
     } catch (error) {
       console.error("Error submitting post:", error);
@@ -136,11 +155,15 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
             <Input 
               id="title" 
               value={title} 
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (e.target.value.trim()) setTitleError("");
+              }}
               placeholder="Write a descriptive title..."
-              className="border-green-100 focus-visible:ring-green-500"
+              className={`border-green-100 focus-visible:ring-green-500 ${titleError ? 'border-red-300' : ''}`}
               disabled={isSubmitting}
             />
+            {titleError && <p className="text-red-500 text-sm mt-1">{titleError}</p>}
           </div>
           
           <div className="space-y-2">
@@ -148,11 +171,15 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
             <Textarea 
               id="content" 
               value={content} 
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => {
+                setContent(e.target.value);
+                if (e.target.value.trim()) setContentError("");
+              }}
               placeholder="Share your experience, question or advice..."
-              className="min-h-[150px] border-green-100 focus-visible:ring-green-500"
+              className={`min-h-[150px] border-green-100 focus-visible:ring-green-500 ${contentError ? 'border-red-300' : ''}`}
               disabled={isSubmitting}
             />
+            {contentError && <p className="text-red-500 text-sm mt-1">{contentError}</p>}
           </div>
           
           <div className="space-y-2">
@@ -180,18 +207,20 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
                 onChange={(e) => setTag(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Add tag and press Enter"
-                className="border-green-100 focus-visible:ring-green-500"
+                className={`border-green-100 focus-visible:ring-green-500 ${tagsError ? 'border-red-300' : ''}`}
                 disabled={isSubmitting}
               />
               <Button 
                 type="button" 
                 onClick={handleAddTag} 
                 className="ml-2 bg-green-600 hover:bg-green-700"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !tag}
               >
                 Add
               </Button>
             </div>
+            
+            {tagsError && <p className="text-red-500 text-sm mt-1">{tagsError}</p>}
             
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
@@ -223,7 +252,12 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
             className="bg-green-600 hover:bg-green-700"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Posting..." : "Post"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Posting...
+              </>
+            ) : "Post"}
           </Button>
         </DialogFooter>
       </DialogContent>

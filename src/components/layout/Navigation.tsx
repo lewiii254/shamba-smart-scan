@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Leaf, Camera, Menu, X, History, LogOut, User, LogIn, Info, MessageSquare, BookOpen, Users } from "lucide-react";
+import { Leaf, Camera, Menu, X, History, LogOut, User, LogIn, Info, MessageSquare, BookOpen, Users, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/components/AuthProvider";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -63,6 +63,12 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
       name: "Community Forum", 
       path: "/community-forum", 
       icon: <Users className="h-5 w-5 mr-2" />,
+      authRequired: false
+    },
+    { 
+      name: "Video Tutorials", 
+      path: "/video-library", 
+      icon: <Video className="h-5 w-5 mr-2" />,
       authRequired: false
     },
     { 
