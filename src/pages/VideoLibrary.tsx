@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import VideoTutorialCard from "@/components/video/VideoTutorialCard";
 import VideoSearchFilter from "@/components/video/VideoSearchFilter";
@@ -39,31 +39,33 @@ const VideoLibrary: React.FC = () => {
           <p className="text-amber-700">Educational content on farming practices, disease management, and more.</p>
         </div>
         
-        <VideoSearchFilter 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-        />
-        
-        <TabsContent value={activeCategory} className="mt-0">
-          <div className={`grid grid-cols-1 ${isMobile ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3'} gap-6`}>
-            {filteredVideos.length > 0 ? (
-              filteredVideos.map(video => (
-                <VideoTutorialCard 
-                  key={video.id} 
-                  video={video} 
-                  onVideoClick={handleVideoClick} 
-                />
-              ))
-            ) : (
-              <div className="col-span-full py-12 text-center">
-                <p className="text-amber-800">No videos found matching your search criteria.</p>
-                <p className="text-amber-600 mt-2">Try adjusting your search or category filters.</p>
-              </div>
-            )}
-          </div>
-        </TabsContent>
+        <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+          <VideoSearchFilter 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+          />
+          
+          <TabsContent value={activeCategory} className="mt-0">
+            <div className={`grid grid-cols-1 ${isMobile ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3'} gap-6`}>
+              {filteredVideos.length > 0 ? (
+                filteredVideos.map(video => (
+                  <VideoTutorialCard 
+                    key={video.id} 
+                    video={video} 
+                    onVideoClick={handleVideoClick} 
+                  />
+                ))
+              ) : (
+                <div className="col-span-full py-12 text-center">
+                  <p className="text-amber-800">No videos found matching your search criteria.</p>
+                  <p className="text-amber-600 mt-2">Try adjusting your search or category filters.</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
         
         <VideoModal 
           isOpen={isModalOpen}
