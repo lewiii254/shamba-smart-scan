@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 const WeatherWidget: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState("New York");
+  const [location, setLocation] = useState("Nairobi, Kenya");
   const [error, setError] = useState("");
   const { toast } = useToast();
 
@@ -23,51 +23,51 @@ const WeatherWidget: React.FC = () => {
         const mockWeatherData: WeatherData = {
           location: location,
           current: {
-            temp_c: 22,
+            temp_c: 24,
             condition: {
               text: "Partly cloudy",
               icon: "//cdn.weatherapi.com/weather/64x64/day/116.png"
             },
-            wind_kph: 15,
-            humidity: 65,
-            precip_mm: 0.2
+            wind_kph: 12,
+            humidity: 58,
+            precip_mm: 0.1
           },
           forecast: {
             forecastday: [
               {
                 date: new Date().toISOString().split('T')[0],
                 day: {
-                  maxtemp_c: 24,
-                  mintemp_c: 18,
+                  maxtemp_c: 26,
+                  mintemp_c: 20,
                   condition: {
                     text: "Partly cloudy",
                     icon: "//cdn.weatherapi.com/weather/64x64/day/116.png"
                   },
-                  daily_chance_of_rain: 20
+                  daily_chance_of_rain: 15
                 }
               },
               {
                 date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
                 day: {
-                  maxtemp_c: 26,
-                  mintemp_c: 17,
+                  maxtemp_c: 27,
+                  mintemp_c: 19,
                   condition: {
                     text: "Sunny",
                     icon: "//cdn.weatherapi.com/weather/64x64/day/113.png"
                   },
-                  daily_chance_of_rain: 0
+                  daily_chance_of_rain: 5
                 }
               },
               {
                 date: new Date(Date.now() + 172800000).toISOString().split('T')[0],
                 day: {
-                  maxtemp_c: 23,
-                  mintemp_c: 19,
+                  maxtemp_c: 25,
+                  mintemp_c: 18,
                   condition: {
                     text: "Light rain",
                     icon: "//cdn.weatherapi.com/weather/64x64/day/296.png"
                   },
-                  daily_chance_of_rain: 70
+                  daily_chance_of_rain: 40
                 }
               }
             ]

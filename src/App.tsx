@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import SpecialistChat from "./pages/SpecialistChat";
 import DiseaseLibrary from "./pages/DiseaseLibrary";
 import CommunityForum from "./pages/CommunityForum";
+import VideoLibrary from "./pages/VideoLibrary";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
 
@@ -48,6 +49,7 @@ const App = () => {
               } />
               <Route path="/disease-library" element={<DiseaseLibrary />} />
               <Route path="/community-forum" element={<CommunityForum />} />
+              <Route path="/video-library" element={<VideoLibrary />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

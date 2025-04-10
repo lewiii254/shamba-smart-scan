@@ -22,6 +22,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   
@@ -56,6 +57,14 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
       setTags([...tags, category]);
     }
   };
+  
+  const resetForm = () => {
+    setTitle("");
+    setContent("");
+    setTags([]);
+    setTag("");
+    setIsSubmitting(false);
+  };
 
   const handleSubmit = () => {
     if (!title.trim()) {
@@ -84,27 +93,38 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
       });
       return;
     }
-
-    // Call the onSubmit callback with the form data
-    onSubmit({
-      title,
-      content,
-      tags
-    });
-
-    // Reset form fields after successful submission
-    setTitle("");
-    setContent("");
-    setTags([]);
     
-    toast({
-      title: "Success",
-      description: "Your post has been created successfully!",
-    });
+    setIsSubmitting(true);
+
+    try {
+      // Call the onSubmit callback with the form data
+      onSubmit({
+        title,
+        content,
+        tags
+      });
+      
+      // Reset form after successful submission
+      resetForm();
+      
+    } catch (error) {
+      console.error("Error submitting post:", error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+    }
+  };
+  
+  const handleClose = () => {
+    resetForm();
+    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="text-xl text-green-800">Create New Post</DialogTitle>
@@ -119,6 +139,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Write a descriptive title..."
               className="border-green-100 focus-visible:ring-green-500"
+              disabled={isSubmitting}
             />
           </div>
           
@@ -130,6 +151,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
               onChange={(e) => setContent(e.target.value)}
               placeholder="Share your experience, question or advice..."
               className="min-h-[150px] border-green-100 focus-visible:ring-green-500"
+              disabled={isSubmitting}
             />
           </div>
           
@@ -159,11 +181,13 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
                 onKeyDown={handleKeyDown}
                 placeholder="Add tag and press Enter"
                 className="border-green-100 focus-visible:ring-green-500"
+                disabled={isSubmitting}
               />
               <Button 
                 type="button" 
                 onClick={handleAddTag} 
                 className="ml-2 bg-green-600 hover:bg-green-700"
+                disabled={isSubmitting}
               >
                 Add
               </Button>
@@ -188,13 +212,18 @@ const NewPostModal: React.FC<NewPostModalProps> = ({ isOpen, onClose, onSubmit }
         <DialogFooter>
           <Button 
             variant="outline" 
-            onClick={onClose} 
+            onClick={handleClose} 
             className="border-green-200 text-green-700 hover:bg-green-50"
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
-            Post
+          <Button 
+            onClick={handleSubmit} 
+            className="bg-green-600 hover:bg-green-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Posting..." : "Post"}
           </Button>
         </DialogFooter>
       </DialogContent>
