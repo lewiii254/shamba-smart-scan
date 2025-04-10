@@ -1,10 +1,10 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -16,6 +16,22 @@ import VideoLibrary from "./pages/VideoLibrary";
 import ProfilePage from "./pages/ProfilePage";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
+
+// Page transition wrapper
+const PageTransition = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Scroll to top on page change
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  
+  return (
+    <div className="page-transition">
+      {children}
+    </div>
+  );
+};
 
 // Create a React component to wrap the application
 const App = () => {
@@ -33,28 +49,52 @@ const App = () => {
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/scan" element={
-                <RequireAuth>
-                  <Index />
-                </RequireAuth>
+                <PageTransition>
+                  <RequireAuth>
+                    <Index />
+                  </RequireAuth>
+                </PageTransition>
               } />
               <Route path="/history" element={
-                <RequireAuth>
+                <PageTransition>
+                  <RequireAuth>
+                    <Index />
+                  </RequireAuth>
+                </PageTransition>
+              } />
+              <Route path="/about" element={
+                <PageTransition>
                   <Index />
-                </RequireAuth>
+                </PageTransition>
               } />
-              <Route path="/about" element={<Index />} />
               <Route path="/specialist-chat" element={
-                <RequireAuth>
-                  <SpecialistChat />
-                </RequireAuth>
+                <PageTransition>
+                  <RequireAuth>
+                    <SpecialistChat />
+                  </RequireAuth>
+                </PageTransition>
               } />
-              <Route path="/disease-library" element={<DiseaseLibrary />} />
-              <Route path="/community-forum" element={<CommunityForum />} />
-              <Route path="/video-library" element={<VideoLibrary />} />
+              <Route path="/disease-library" element={
+                <PageTransition>
+                  <DiseaseLibrary />
+                </PageTransition>
+              } />
+              <Route path="/community-forum" element={
+                <PageTransition>
+                  <CommunityForum />
+                </PageTransition>
+              } />
+              <Route path="/video-library" element={
+                <PageTransition>
+                  <VideoLibrary />
+                </PageTransition>
+              } />
               <Route path="/profile" element={
-                <RequireAuth>
-                  <ProfilePage />
-                </RequireAuth>
+                <PageTransition>
+                  <RequireAuth>
+                    <ProfilePage />
+                  </RequireAuth>
+                </PageTransition>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
