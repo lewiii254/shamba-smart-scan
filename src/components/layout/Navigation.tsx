@@ -152,6 +152,10 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
                     <User className="mr-2 h-4 w-4" />
                     <span className="truncate">{user.email}</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Logout</span>
