@@ -7,6 +7,9 @@ import VideoSearchFilter from "@/components/video/VideoSearchFilter";
 import VideoModal from "@/components/video/VideoModal";
 import { videoTutorials } from "@/data/videoTutorials";
 import { VideoTutorial } from "@/types/video";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const VideoLibrary: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +17,7 @@ const VideoLibrary: React.FC = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoTutorial | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   
   // Filter videos based on search query and active category
   const filteredVideos = videoTutorials.filter(video => {
@@ -30,10 +34,25 @@ const VideoLibrary: React.FC = () => {
       setIsModalOpen(true);
     }
   };
+
+  const handleGoBack = () => {
+    navigate('/');
+  };
   
   return (
     <div className="min-h-screen bg-amber-50/50">
       <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center mb-4">
+          <Button 
+            variant="ghost" 
+            onClick={handleGoBack}
+            className="mr-4 text-amber-800 hover:text-amber-600 hover:bg-amber-100/80"
+          >
+            <ArrowLeft className="h-5 w-5 mr-1" />
+            Back to Home
+          </Button>
+        </div>
+        
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-amber-800 mb-2">Video Tutorials</h1>
           <p className="text-amber-700">Educational content on farming practices, disease management, and more.</p>

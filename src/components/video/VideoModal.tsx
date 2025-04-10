@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { VideoTutorial } from "@/types/video";
@@ -25,6 +25,9 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
             </Button>
           </DialogClose>
         </DialogHeader>
+        <DialogDescription className="sr-only">
+          Video tutorial: {video.title}
+        </DialogDescription>
         <div className="aspect-video w-full">
           <iframe
             className="w-full h-full"
