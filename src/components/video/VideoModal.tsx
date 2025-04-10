@@ -29,14 +29,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
           Video tutorial: {video.title}
         </DialogDescription>
         <div className="aspect-video w-full">
-          <iframe
-            className="w-full h-full"
-            src={`https://www.youtube.com/embed/${video.youtubeId}`}
-            title={video.title}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/lZra4jibb4U?si=IOQBFjdQ8UG7Ay9H" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <div className="p-4">
           <h3 className="font-semibold text-amber-800">{video.instructor.name}</h3>
