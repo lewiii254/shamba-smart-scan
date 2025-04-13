@@ -7,6 +7,7 @@ import { useAuth } from "@/components/AuthProvider";
 import NavItems, { navItems } from "./NavItems";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
+import NotificationCenter from "./NotificationCenter";
 
 interface NavigationProps {
   activeTab: string;
@@ -55,7 +56,8 @@ const Navigation = ({ activeTab, setActiveTab }: NavigationProps) => {
           )}
           
           {/* Auth Buttons */}
-          <div className="flex items-center">
+          <div className="flex items-center space-x-1">
+            {user && !isMobile && <NotificationCenter />}
             <UserMenu />
             
             {/* Mobile Menu Button */}

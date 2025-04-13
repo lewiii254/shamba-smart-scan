@@ -16,6 +16,7 @@ import VideoLibrary from "./pages/VideoLibrary";
 import ProfilePage from "./pages/ProfilePage";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
+import { NotificationProvider } from "./components/NotificationProvider";
 
 // Page transition wrapper
 const PageTransition = ({ children }: { children: React.ReactNode }) => {
@@ -41,66 +42,68 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/scan" element={
-                <PageTransition>
-                  <RequireAuth>
+        <NotificationProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/scan" element={
+                  <PageTransition>
+                    <RequireAuth>
+                      <Index />
+                    </RequireAuth>
+                  </PageTransition>
+                } />
+                <Route path="/history" element={
+                  <PageTransition>
+                    <RequireAuth>
+                      <Index />
+                    </RequireAuth>
+                  </PageTransition>
+                } />
+                <Route path="/about" element={
+                  <PageTransition>
                     <Index />
-                  </RequireAuth>
-                </PageTransition>
-              } />
-              <Route path="/history" element={
-                <PageTransition>
-                  <RequireAuth>
-                    <Index />
-                  </RequireAuth>
-                </PageTransition>
-              } />
-              <Route path="/about" element={
-                <PageTransition>
-                  <Index />
-                </PageTransition>
-              } />
-              <Route path="/specialist-chat" element={
-                <PageTransition>
-                  <RequireAuth>
-                    <SpecialistChat />
-                  </RequireAuth>
-                </PageTransition>
-              } />
-              <Route path="/disease-library" element={
-                <PageTransition>
-                  <DiseaseLibrary />
-                </PageTransition>
-              } />
-              <Route path="/community-forum" element={
-                <PageTransition>
-                  <CommunityForum />
-                </PageTransition>
-              } />
-              <Route path="/video-library" element={
-                <PageTransition>
-                  <VideoLibrary />
-                </PageTransition>
-              } />
-              <Route path="/profile" element={
-                <PageTransition>
-                  <RequireAuth>
-                    <ProfilePage />
-                  </RequireAuth>
-                </PageTransition>
-              } />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+                  </PageTransition>
+                } />
+                <Route path="/specialist-chat" element={
+                  <PageTransition>
+                    <RequireAuth>
+                      <SpecialistChat />
+                    </RequireAuth>
+                  </PageTransition>
+                } />
+                <Route path="/disease-library" element={
+                  <PageTransition>
+                    <DiseaseLibrary />
+                  </PageTransition>
+                } />
+                <Route path="/community-forum" element={
+                  <PageTransition>
+                    <CommunityForum />
+                  </PageTransition>
+                } />
+                <Route path="/video-library" element={
+                  <PageTransition>
+                    <VideoLibrary />
+                  </PageTransition>
+                } />
+                <Route path="/profile" element={
+                  <PageTransition>
+                    <RequireAuth>
+                      <ProfilePage />
+                    </RequireAuth>
+                  </PageTransition>
+                } />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </NotificationProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
