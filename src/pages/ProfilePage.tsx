@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -136,15 +137,14 @@ const ProfilePage: React.FC = () => {
                   </div>
                   
                   {isEditing ? (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium text-green-700 mb-1 block">Bio</label>
-                        <Input 
-                          as="textarea"
-                          value={bio}
-                          onChange={(e) => setBio(e.target.value)}
-                          className="h-24 min-h-[80px]"
-                        />
+  <div className="space-y-4">
+    <div>
+      <label className="text-sm font-medium text-green-700 mb-1 block">Bio</label>
+      <Textarea
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+        className="h-24 min-h-[80px]"
+      />
                       </div>
                     </div>
                   ) : (
