@@ -51,6 +51,22 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
         <DialogDescription className="sr-only">
           Video tutorial: {video.title}
         </DialogDescription>
+        
+        {/* ===========================================================
+         * YouTube iframe customization: Start
+         * 
+         * You can customize the YouTube iframe here by:
+         * 1. Modifying the container div styles for appearance
+         * 2. Changing iframe parameters to control player features
+         * 3. Adding custom player controls or styling
+         *
+         * YouTube URL parameters you can add to the src attribute:
+         * - autoplay=1: Automatically play video when loaded
+         * - controls=0: Hide player controls
+         * - rel=0: Don't show related videos
+         * - modestbranding=1: Hide YouTube logo
+         * - fs=0: Disable fullscreen button
+         * =========================================================== */}
         <div className="aspect-video w-full">
           <iframe 
             width="100%" 
@@ -63,6 +79,10 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
             allowFullScreen
           ></iframe>
         </div>
+        {/* ===========================================================
+         * YouTube iframe customization: End
+         * =========================================================== */}
+        
         <div className="p-4">
           <h3 className="font-semibold text-amber-800">{video.instructor.name}</h3>
           <p className="text-amber-700 mt-2">{video.description}</p>
