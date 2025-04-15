@@ -13,12 +13,6 @@ interface NavItemsProps {
 
 export const navItems = [
   { 
-    name: "Home", 
-    path: "/", 
-    icon: <Leaf className="h-5 w-5 mr-2" />,
-    authRequired: false
-  },
-  { 
     name: "Scan Plants", 
     path: "/scan", 
     icon: <Camera className="h-5 w-5 mr-2" />,
