@@ -129,6 +129,19 @@ This project is licensed under the MIT License – see the `LICENSE` file for de
 
 ---
 
+## 🤝 Contributing
+
+We welcome all kinds of contributions from the community! 🌍 Whether you're a developer, designer, plant enthusiast, or just curious, there’s a way to help! 💪
+
+### How to Contribute:
+
+1. 🍴 **Fork** the repository
+2. 👯 **Clone** your fork:  
+   ```bash
+   git clone https://github.com/your-username/ai-crop-doctor.git
+
+---
+
 Happy farming! 🌻  
 _– The AI Crop Doctor Team_
 
