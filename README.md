@@ -7,10 +7,10 @@
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square">
   </a>
   <a href="https://github.com/lewiii254/shamba-smart-scan/stargazers">
-    <img alt="GitHub Stars" src="https://img.shields.io/github/stars/lewiii254/akili-wellness-hub?style=flat-square">
+    <img alt="GitHub Stars" src="https://img.shields.io/github/stars/lewiii254/shamba-smart-scan?style=flat-square">
   </a>
-  <a href="https://github.com/lewiii254/akili-wellness-hub/network/members">
-    <img alt="GitHub Forks" src="https://img.shields.io/github/forks/lewiii254/akili-wellness-hub?style=flat-square">
+  <a href="https://github.com/lewiii254/shamba-smart-scan/network/members">
+    <img alt="GitHub Forks" src="https://img.shields.io/github/forks/lewiii254/shamba-smart-scan?style=flat-square">
   </a>
 </p>
 
