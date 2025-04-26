@@ -1,12 +1,12 @@
 # 🌿 AI Crop Doctor 🤖
 <p align="center">
-  <a href="https://akili-wellness-hub.vercel.app/">
+  <a href="https://shamba-smart-scan.vercel.app/">
     <img alt="Vercel" src="https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel&style=flat-square">
   </a>
-  <a href="https://github.com/lewiii254/akili-wellness-hub/blob/main/LICENSE">
+  <a href="https://github.com/lewiii254/shamba-smart-scan/blob/main/LICENSE">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square">
   </a>
-  <a href="https://github.com/lewiii254/akili-wellness-hub/stargazers">
+  <a href="https://github.com/lewiii254/shamba-smart-scan/stargazers">
     <img alt="GitHub Stars" src="https://img.shields.io/github/stars/lewiii254/akili-wellness-hub?style=flat-square">
   </a>
   <a href="https://github.com/lewiii254/akili-wellness-hub/network/members">
