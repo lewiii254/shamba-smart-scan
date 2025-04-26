@@ -1,4 +1,18 @@
 # 🌿 AI Crop Doctor 🤖
+<p align="center">
+  <a href="https://akili-wellness-hub.vercel.app/">
+    <img alt="Vercel" src="https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel&style=flat-square">
+  </a>
+  <a href="https://github.com/lewiii254/akili-wellness-hub/blob/main/LICENSE">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square">
+  </a>
+  <a href="https://github.com/lewiii254/akili-wellness-hub/stargazers">
+    <img alt="GitHub Stars" src="https://img.shields.io/github/stars/lewiii254/akili-wellness-hub?style=flat-square">
+  </a>
+  <a href="https://github.com/lewiii254/akili-wellness-hub/network/members">
+    <img alt="GitHub Forks" src="https://img.shields.io/github/forks/lewiii254/akili-wellness-hub?style=flat-square">
+  </a>
+</p>
 
 Welcome to **AI Crop Doctor** — your AI-powered assistant for diagnosing plant diseases, connecting with experts, and growing healthier crops! 🚜🌱
 
