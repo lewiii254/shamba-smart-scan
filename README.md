@@ -143,7 +143,7 @@ This project is licensed under the MIT License – see the `LICENSE` file for de
 
 ---
 
-## 🤝 Contributing
+## 🤝Contributing
 
 We welcome all kinds of contributions from the community! 🌍 Whether you're a developer, designer, plant enthusiast, or just curious, there’s a way to help! 💪
 
