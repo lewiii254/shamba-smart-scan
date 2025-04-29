@@ -28,7 +28,7 @@ The **AI Crop Doctor** is an innovative platform designed for farmers and garden
 
 ---
 
-## 🧠 Tech Stack
+## 🧠 Tech Stack ⚒
 
 Here’s what’s under the hood 🛠️:
 
