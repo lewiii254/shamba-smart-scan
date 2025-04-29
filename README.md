@@ -157,5 +157,5 @@ We welcome all kinds of contributions from the community! 🌍 Whether you're a 
 ---
 
 Happy farming! 🌻  
-_– The AI Crop Doctor Team_
+_– The AI Crop Doctor Team_😁🤝
 
