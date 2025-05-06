@@ -7,19 +7,19 @@ const TestimonialsSection = () => {
   const testimonials = [
     {
       initial: "J",
-      name: "John D. 👨‍🌾",
+      name: "Ann Njeru. 👨‍🌾",
       role: "Small-scale Farmer",
       text: "Crop Doctor has transformed how I manage my farm. Identifying diseases early has saved me thousands in potential crop losses. Highly recommend! 🌱"
     },
     {
       initial: "S",
-      name: "Sarah M. 👩‍🌾",
+      name: "Stephen Ndwiga. 👩‍🌾",
       role: "Urban Gardener",
       text: "As a hobby gardener, I was always struggling with plant diseases. Crop Doctor makes it so easy to identify and treat problems! My garden has never looked better. 🌿"
     },
     {
       initial: "R",
-      name: "Robert K. 🧑‍🌾",
+      name: "Wilson Omondi. 🧑‍🌾",
       role: "Commercial Grower",
       text: "This app has become an essential tool for our farm operations. The instant diagnosis helps us take action quickly and protect our yields. Worth every penny! 💯"
     }
