@@ -81,7 +81,7 @@ export const videoTutorials: VideoTutorial[] = [
     id: "v6",
     title: "Treating Fungal Infections",
     description: "Step-by-step guide to treating various fungal infections in plants.",
-    thumbnail: "https://img.youtube.com/vi/aLCqmS3tOnE/hqdefault.jpg",
+    thumbnail: "https://youtu.be/-Rf3CvI-x8o?si=uAWiI9zTbu8RIe8E",
     youtubeId: "aLCqmS3tOnE",
     duration: "21:47",
     views: "11.3k",
