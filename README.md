@@ -32,12 +32,12 @@ The **AI Crop Doctor** is an innovative platform designed for farmers and garden
 
 Here’s what’s under the hood 🛠️:
 
-- **Frontend**: React Native / Flutter (mobile-first)
-- **Backend**: Node.js / Express.js
+- **Frontend**: React/ Tailwind CSS/ ShadCn(mobile-first)
+- **Backend**: SUPABASE
 - **AI/ML Models**: TensorFlow / PyTorch (CNN-based classifiers)
-- **Database**: MongoDB
+- **Database**: SupaBase
 - **Cloud & DevOps**: AWS / Firebase / Docker
-- **Authentication**: Firebase Auth / OAuth
+- **Authentication**: supabase Auth / OAuth
 - **Others**: REST APIs, WebSockets for real-time chat
 
 ---
