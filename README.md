@@ -43,7 +43,7 @@ Here’s what’s under the hood 🛠️:
 
 ---
 
-## 🚀 Features
+## 🚀 Features💯
 
 ✅ **AI Disease Detection** – Identifies 40+ plant diseases with 95% accuracy!  
 ✅ **Expert Treatment Plans** – Tailored advice from agricultural scientists 🌾  
