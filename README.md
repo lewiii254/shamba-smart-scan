@@ -1,4 +1,5 @@
 # 🌿AI Crop Doctor 🤖
+
 <p align="center">
   <a href="https://shamba-smart-scan.vercel.app/">
     <img alt="Vercel" src="https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel&style=flat-square">
