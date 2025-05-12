@@ -24,7 +24,7 @@ Welcome to **AI Crop Doctor** — your AI-powered assistant for diagnosing plant
 
 The **AI Crop Doctor** is an innovative platform designed for farmers and gardeners to **manage plant health** using cutting-edge **machine learning** and **computer vision**. With just a snap 📸, get instant diagnoses and expert-validated treatment plans.
 
-🌍 Join a growing community of green thumbs and agricultural pros in fighting plant diseases — smarter and faster!
+🌍 Join a growing community of green thumbs and agricultural pros in fighting plant diseases — smarter and faster!🙌
 
 ---
 
