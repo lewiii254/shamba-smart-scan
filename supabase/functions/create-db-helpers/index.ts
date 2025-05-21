@@ -13,22 +13,37 @@ serve(async (req) => {
     
     // Create the database tables if they don't exist
     const { error: tablesError } = await supabase.rpc('create_mpesa_tables');
-    if (tablesError) throw tablesError;
+    if (tablesError) {
+      console.error("Error creating tables:", tablesError);
+      throw tablesError;
+    }
     
     // Create the transaction query function
     const { error: mpesaTxFuncError } = await supabase.rpc('create_mpesa_transaction_function');
-    if (mpesaTxFuncError) throw mpesaTxFuncError;
+    if (mpesaTxFuncError) {
+      console.error("Error creating transaction function:", mpesaTxFuncError);
+      throw mpesaTxFuncError;
+    }
     
     // Create the subscription query function
     const { error: subFuncError } = await supabase.rpc('create_user_subscription_function');
-    if (subFuncError) throw subFuncError;
+    if (subFuncError) {
+      console.error("Error creating subscription function:", subFuncError);
+      throw subFuncError;
+    }
     
     // Create the RPC functions for our TypeScript-safe queries
     const createMpesaRPC = await supabase.rpc('create_get_mpesa_transaction_rpc');
-    const createSubRPC = await supabase.rpc('create_get_user_subscription_rpc');
+    if (createMpesaRPC.error) {
+      console.error("Error creating mpesa RPC:", createMpesaRPC.error);
+      throw createMpesaRPC.error;
+    }
     
-    if (createMpesaRPC.error) throw createMpesaRPC.error;
-    if (createSubRPC.error) throw createSubRPC.error;
+    const createSubRPC = await supabase.rpc('create_get_user_subscription_rpc');
+    if (createSubRPC.error) {
+      console.error("Error creating subscription RPC:", createSubRPC.error);
+      throw createSubRPC.error;
+    }
     
     return new Response(JSON.stringify({
       success: true,

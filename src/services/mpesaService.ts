@@ -71,7 +71,9 @@ export const checkMpesaPaymentStatus = async (
     }
     
     // Safely check if the status property exists and is "COMPLETED"
-    const isCompleted = transactionData.status === 'COMPLETED';
+    const isCompleted = transactionData && 
+                        transactionData.status && 
+                        transactionData.status === 'COMPLETED';
     
     return {
       success: isCompleted,
