@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 
 interface MpesaPaymentRequest {
   phoneNumber: string;
@@ -23,34 +24,24 @@ export const initiateMpesaPayment = async (
   paymentRequest: MpesaPaymentRequest
 ): Promise<MpesaPaymentResponse> => {
   try {
-    // In a real implementation, this would call a Supabase Edge Function
-    // that interfaces with the M-Pesa API
-    
-    // Simulate API call for demo purposes
     console.log("Initiating M-Pesa payment:", paymentRequest);
     
-    // For demo purposes, we'll simulate a successful response
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Get the current user ID to associate with the payment
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     
-    // In production, the response would come from the M-Pesa API
-    // via a Supabase Edge Function
-    return {
-      success: true,
-      message: "Payment request sent successfully",
-      transactionId: `M-${Date.now()}`,
-      checkoutRequestId: `CRQ-${Math.floor(Math.random() * 1000000)}`
-    };
-    
-    // Actual implementation with Supabase would look like:
-    /*
+    // Call the edge function
     const { data, error } = await supabase.functions.invoke('mpesa-stk-push', {
-      body: paymentRequest
+      body: {
+        ...paymentRequest,
+        userId
+      }
     });
     
     if (error) throw error;
     
+    console.log("M-Pesa payment initiated successfully:", data);
     return data;
-    */
   } catch (error) {
     console.error("Error initiating M-Pesa payment:", error);
     return {
@@ -67,29 +58,31 @@ export const checkMpesaPaymentStatus = async (
   checkoutRequestId: string
 ): Promise<MpesaPaymentResponse> => {
   try {
-    // In a real implementation, this would call a Supabase Edge Function
     console.log("Checking payment status for:", checkoutRequestId);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Return simulated response
-    return {
-      success: true,
-      message: "Payment completed successfully",
-      transactionId: `M-${Date.now()}`
-    };
-    
-    // Actual implementation:
-    /*
-    const { data, error } = await supabase.functions.invoke('mpesa-query-status', {
-      body: { checkoutRequestId }
-    });
+    // Query the database directly for the payment status
+    const { data, error } = await supabase
+      .from('mpesa_transactions')
+      .select('status, transaction_id')
+      .eq('checkout_request_id', checkoutRequestId)
+      .single();
     
     if (error) throw error;
     
-    return data;
-    */
+    if (!data) {
+      return {
+        success: false,
+        message: "Payment not found"
+      };
+    }
+    
+    const isCompleted = data.status === 'COMPLETED';
+    
+    return {
+      success: isCompleted,
+      message: isCompleted ? "Payment completed successfully" : "Payment is still processing",
+      transactionId: data.transaction_id
+    };
   } catch (error) {
     console.error("Error checking M-Pesa payment status:", error);
     return {
@@ -100,28 +93,28 @@ export const checkMpesaPaymentStatus = async (
 };
 
 /**
- * Registers callbacks for M-Pesa transaction notifications
- * This would typically be called once during app initialization
+ * Retrieves subscription status for the current user
  */
-export const registerMpesaCallbacks = async (): Promise<boolean> => {
+export const getUserSubscriptionStatus = async () => {
   try {
-    // This would be implemented as a Supabase Edge Function
-    console.log("Registering M-Pesa callbacks");
+    const { data: { user } } = await supabase.auth.getUser();
     
-    // Actual implementation:
-    /*
-    const { data, error } = await supabase.functions.invoke('mpesa-register-callbacks', {
-      body: { }
-    });
+    if (!user) return null;
     
+    const { data, error } = await supabase
+      .from('user_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+      
     if (error) throw error;
     
-    return data.success;
-    */
-    
-    return true;
+    return data;
   } catch (error) {
-    console.error("Error registering M-Pesa callbacks:", error);
-    return false;
+    console.error("Error getting subscription status:", error);
+    return null;
   }
 };

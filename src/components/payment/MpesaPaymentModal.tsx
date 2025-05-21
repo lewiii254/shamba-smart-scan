@@ -1,12 +1,13 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle2 } from "lucide-react";
-import { initiateMpesaPayment } from "@/services/mpesaService";
+import { Loader2, CheckCircle2, AlertCircle, PhoneCall } from "lucide-react";
+import { initiateMpesaPayment, checkMpesaPaymentStatus } from "@/services/mpesaService";
+import { useAuth } from "@/components/AuthProvider";
 
 interface MpesaPaymentModalProps {
   isOpen: boolean;
@@ -21,26 +22,48 @@ interface MpesaPaymentModalProps {
 
 export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, onClose, plan }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<"idle" | "pending" | "success" | "failed">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [checkoutRequestId, setCheckoutRequestId] = useState<string | null>(null);
+  const [paymentTimer, setPaymentTimer] = useState<number>(120); // 2 minutes countdown
 
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers and format properly for Kenya
-    const value = e.target.value.replace(/[^\d]/g, "");
+  // Initialize phone number from user metadata if available
+  useEffect(() => {
+    if (user?.phone) {
+      setPhoneNumber(formatPhoneNumber(user.phone));
+    } else if (user?.user_metadata?.phone) {
+      setPhoneNumber(formatPhoneNumber(user.user_metadata.phone));
+    }
+  }, [user]);
+
+  // Format phone number to Kenyan format
+  const formatPhoneNumber = (phone: string): string => {
+    // Remove any non-digit characters
+    let digits = phone.replace(/\D/g, '');
     
-    // Format as Kenyan number if it starts with 0 or 7
-    let formatted = value;
-    if (value.startsWith("0") && value.length > 1) {
-      formatted = "254" + value.substring(1);
-    } else if (value.startsWith("7") || value.startsWith("1")) {
-      formatted = "254" + value;
+    // Format as Kenyan number
+    if (digits.startsWith('0') && digits.length >= 10) {
+      return '254' + digits.substring(1);
+    } else if (digits.startsWith('254')) {
+      return digits;
+    } else if ((digits.startsWith('7') || digits.startsWith('1')) && digits.length >= 9) {
+      return '254' + digits;
     }
     
-    setPhoneNumber(formatted);
+    return digits;
   };
 
+  // Handle phone number input change
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow numbers
+    const value = e.target.value.replace(/[^\d]/g, "");
+    setPhoneNumber(formatPhoneNumber(value));
+  };
+
+  // Format phone number for display
   const formatDisplayPhoneNumber = (phone: string) => {
     if (phone.startsWith("254") && phone.length >= 12) {
       return `+${phone.substring(0, 3)} ${phone.substring(3, 6)} ${phone.substring(6, 9)} ${phone.substring(9)}`;
@@ -48,6 +71,66 @@ export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, on
     return phone;
   };
 
+  // Check payment status periodically
+  useEffect(() => {
+    let intervalId: number | null = null;
+    let timerIntervalId: number | null = null;
+    
+    if (paymentStatus === "pending" && checkoutRequestId) {
+      // Update payment timer every second
+      timerIntervalId = window.setInterval(() => {
+        setPaymentTimer((prev) => {
+          if (prev <= 1) {
+            window.clearInterval(timerIntervalId!);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      
+      // Check payment status every 5 seconds
+      intervalId = window.setInterval(async () => {
+        try {
+          const response = await checkMpesaPaymentStatus(checkoutRequestId);
+          
+          if (response.success) {
+            setPaymentStatus("success");
+            window.clearInterval(intervalId!);
+            window.clearInterval(timerIntervalId!);
+            
+            toast({
+              title: "Payment Successful!",
+              description: "Your subscription has been activated.",
+              variant: "default",
+            });
+            
+            // Wait 3 seconds before closing
+            setTimeout(() => {
+              onClose();
+              // Refresh the page to update subscription status
+              window.location.reload();
+            }, 3000);
+          }
+        } catch (error) {
+          console.error("Error checking payment status:", error);
+        }
+      }, 5000);
+    }
+    
+    return () => {
+      if (intervalId) window.clearInterval(intervalId);
+      if (timerIntervalId) window.clearInterval(timerIntervalId);
+    };
+  }, [paymentStatus, checkoutRequestId, toast, onClose]);
+
+  // Stop checking and show timeout message when timer reaches zero
+  useEffect(() => {
+    if (paymentTimer === 0 && paymentStatus === "pending") {
+      setErrorMessage("Payment confirmation timed out. If you completed the payment, it will be processed shortly. You can close this window.");
+    }
+  }, [paymentTimer, paymentStatus]);
+
+  // Handle payment submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -60,6 +143,7 @@ export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, on
     setIsLoading(true);
     setPaymentStatus("pending");
     setErrorMessage("");
+    setPaymentTimer(120); // Reset timer to 2 minutes
     
     try {
       // Call the M-Pesa service to initiate payment
@@ -70,11 +154,11 @@ export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, on
         transactionDesc: `Subscription to ${plan.name}`
       });
       
-      if (response.success) {
-        setPaymentStatus("success");
+      if (response.success && response.checkoutRequestId) {
+        setCheckoutRequestId(response.checkoutRequestId);
         toast({
           title: "Payment Initiated!",
-          description: "Please check your phone to complete the M-Pesa payment.",
+          description: "Please check your phone for the M-Pesa prompt.",
         });
       } else {
         setPaymentStatus("failed");
@@ -112,14 +196,36 @@ export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, on
         {paymentStatus === "success" ? (
           <div className="py-6 flex flex-col items-center text-center space-y-4">
             <CheckCircle2 className="h-16 w-16 text-green-500" />
-            <h3 className="text-xl font-medium">Payment Initiated!</h3>
+            <h3 className="text-xl font-medium">Payment Successful!</h3>
             <p className="text-gray-500">
-              A payment request has been sent to your phone number. Please check your phone and enter your M-Pesa PIN to complete the transaction.
-            </p>
-            <p className="text-sm text-gray-500 mt-2">
-              The page will update automatically once the payment is confirmed.
+              Your payment has been confirmed and your subscription is now active.
             </p>
             <Button onClick={onClose} className="mt-4">Close</Button>
+          </div>
+        ) : paymentStatus === "pending" ? (
+          <div className="py-6 flex flex-col items-center text-center space-y-4">
+            <div className="relative">
+              <PhoneCall className="h-16 w-16 text-amber-500" />
+              <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs animate-pulse">
+                {paymentTimer > 0 ? Math.floor(paymentTimer / 60) : 0}:{paymentTimer > 0 ? (paymentTimer % 60).toString().padStart(2, '0') : '00'}
+              </div>
+            </div>
+            <h3 className="text-xl font-medium">Check Your Phone</h3>
+            <p className="text-gray-500">
+              A payment prompt has been sent to <span className="font-semibold">{formatDisplayPhoneNumber(phoneNumber)}</span>. 
+              Please enter your M-Pesa PIN to complete the payment.
+            </p>
+            <div className="bg-amber-50 p-3 rounded-md border border-amber-200 w-full mt-2">
+              <p className="text-sm text-amber-800">
+                This window will automatically update once your payment is confirmed. Please keep it open.
+              </p>
+            </div>
+            {errorMessage && (
+              <p className="text-sm text-red-500 mt-1">{errorMessage}</p>
+            )}
+            <Button variant="outline" onClick={onClose} className="mt-2">
+              Close
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>

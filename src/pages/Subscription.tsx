@@ -1,16 +1,16 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import { MpesaPaymentModal } from "@/components/payment/MpesaPaymentModal";
+import { getUserSubscriptionStatus } from "@/services/mpesaService";
+import { Badge } from "@/components/ui/badge";
 
 const Subscription = () => {
   const { user } = useAuth();
@@ -18,6 +18,29 @@ const Subscription = () => {
   const navigate = useNavigate();
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [activeSubscription, setActiveSubscription] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user's subscription status
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      if (user) {
+        setLoading(true);
+        try {
+          const subscription = await getUserSubscriptionStatus();
+          setActiveSubscription(subscription);
+        } catch (error) {
+          console.error("Error fetching subscription:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+    
+    fetchSubscription();
+  }, [user]);
 
   const plans = [
     {
@@ -70,7 +93,7 @@ const Subscription = () => {
         description: "Please log in to subscribe to a plan.",
         variant: "destructive",
       });
-      navigate("/auth");
+      navigate("/auth?mode=signin&redirect=subscription");
       return;
     }
 
@@ -88,17 +111,66 @@ const Subscription = () => {
     setPaymentModalOpen(true);
   };
 
+  // Format date to be human readable
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }).format(date);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
       
       <main className="flex-grow container mx-auto px-4 py-12">
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-8">
           <h1 className="text-4xl font-bold text-green-800 mb-4">Upgrade Your Farming Experience</h1>
           <p className="text-lg text-green-700">
             Choose the plan that works best for you and start growing smarter with AI-powered solutions.
           </p>
         </div>
+
+        {/* Show active subscription info if user has one */}
+        {activeSubscription && (
+          <div className="mb-8">
+            <Card className="border-green-500 bg-green-50">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Active Subscription</CardTitle>
+                    <CardDescription>Your current subscription details</CardDescription>
+                  </div>
+                  <Badge variant="outline" className="bg-green-100 text-green-800 border-green-500">
+                    Active
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Plan</p>
+                    <p className="text-lg font-semibold">{activeSubscription.plan === 'monthly' ? 'Premium Monthly' : activeSubscription.plan === 'annual' ? 'Premium Annual' : activeSubscription.plan}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Status</p>
+                    <p className="text-lg font-semibold capitalize">{activeSubscription.status}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Start Date</p>
+                    <p className="text-lg font-semibold">{formatDate(activeSubscription.start_date)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Expiry Date</p>
+                    <p className="text-lg font-semibold">{formatDate(activeSubscription.end_date)}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <Tabs defaultValue="subscription" className="max-w-5xl mx-auto">
           <TabsList className="grid w-full grid-cols-2">
@@ -150,7 +222,11 @@ const Subscription = () => {
                       variant={plan.isEnterprise ? "outline" : "default"}
                       onClick={() => handleSubscribe(plan)}
                     >
-                      {plan.isEnterprise ? "Contact Sales" : "Subscribe Now"}
+                      {activeSubscription && activeSubscription.plan === plan.id.toLowerCase() 
+                        ? "Current Plan" 
+                        : plan.isEnterprise 
+                          ? "Contact Sales" 
+                          : "Subscribe Now"}
                     </Button>
                   </CardContent>
                 </Card>
