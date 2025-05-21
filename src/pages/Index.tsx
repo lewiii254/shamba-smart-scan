@@ -260,7 +260,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
-      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navigation activeTab={activeTab} setActiveTab={(tab) => setActiveTab(tab)} />
 
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

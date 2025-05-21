@@ -7,7 +7,12 @@ import { useAuth } from "@/components/AuthProvider";
 import UserMenu from "./UserMenu";
 import NavItems from "./NavItems";
 
-const Navigation = ({ activeTab = "", setActiveTab = () => {} }) => {
+interface NavigationProps {
+  activeTab?: string;
+  setActiveTab?: (tab: string) => void; // Updated to accept a string parameter
+}
+
+const Navigation = ({ activeTab = "", setActiveTab = () => {} }: NavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();

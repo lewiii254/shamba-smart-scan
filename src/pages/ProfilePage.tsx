@@ -103,7 +103,7 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navigation activeTab={activeTab} setActiveTab={(tab) => setActiveTab(tab)} />
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

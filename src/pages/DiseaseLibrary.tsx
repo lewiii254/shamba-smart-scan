@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Search, Filter, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -53,7 +52,7 @@ const DiseaseLibrary = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
-      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navigation activeTab={activeTab} setActiveTab={(tab) => setActiveTab(tab)} />
 
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">

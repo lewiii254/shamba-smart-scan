@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { forumPosts } from "@/data/forumPosts";
 import ForumHeader from "@/components/forum/ForumHeader";
@@ -111,7 +110,7 @@ const CommunityForum: React.FC = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-green-50 to-white">
-      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navigation activeTab={activeTab} setActiveTab={(tab) => setActiveTab(tab)} />
       
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {selectedPost ? (
