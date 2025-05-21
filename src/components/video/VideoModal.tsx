@@ -53,19 +53,22 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
         </DialogDescription>
         
         {/* ===========================================================
-         * YouTube iframe customization: Start
+         * 🔴 YOUTUBE IFRAME CUSTOMIZATION 🔴
          * 
-         * You can customize the YouTube iframe here by:
-         * 1. Modifying the container div styles for appearance
-         * 2. Changing iframe parameters to control player features
-         * 3. Adding custom player controls or styling
+         * INSTRUCTIONS:
+         * 1. You can customize the appearance and behavior of the YouTube player below
+         * 2. To add a custom YouTube video, replace the "youtubeId" parameter in your code 
+         * 3. Add custom player controls by modifying these URL parameters:
+         *    - autoplay=1: Auto-plays when loaded
+         *    - controls=0: Hides YouTube controls
+         *    - rel=0: Doesn't show related videos
+         *    - modestbranding=1: Minimizes YouTube branding
+         *    - fs=1: Enables fullscreen button (0 to disable)
+         *    - loop=1: Loops the video
+         *    - start=30: Starts playing at 30 seconds
          *
-         * YouTube URL parameters you can add to the src attribute:
-         * - autoplay=1: Automatically play video when loaded
-         * - controls=0: Hide player controls
-         * - rel=0: Don't show related videos
-         * - modestbranding=1: Hide YouTube logo
-         * - fs=0: Disable fullscreen button
+         * Example optimized for maximum customization:
+         * src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&rel=0&modestbranding=1&controls=1`}
          * =========================================================== */}
         <div className="aspect-video w-full">
           <iframe 
@@ -79,9 +82,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
             allowFullScreen
           ></iframe>
         </div>
-        {/* ===========================================================
-         * YouTube iframe customization: End
-         * =========================================================== */}
+        {/* 🔴 END OF YOUTUBE IFRAME CUSTOMIZATION 🔴 */}
         
         <div className="p-4">
           <h3 className="font-semibold text-amber-800">{video.instructor.name}</h3>

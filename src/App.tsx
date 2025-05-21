@@ -14,6 +14,7 @@ import DiseaseLibrary from "./pages/DiseaseLibrary";
 import CommunityForum from "./pages/CommunityForum";
 import VideoLibrary from "./pages/VideoLibrary";
 import ProfilePage from "./pages/ProfilePage";
+import Subscription from "./pages/Subscription";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
 import { NotificationProvider } from "./components/NotificationProvider";
@@ -96,6 +97,11 @@ const App = () => {
                     <RequireAuth>
                       <ProfilePage />
                     </RequireAuth>
+                  </PageTransition>
+                } />
+                <Route path="/subscription" element={
+                  <PageTransition>
+                    <Subscription />
                   </PageTransition>
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
