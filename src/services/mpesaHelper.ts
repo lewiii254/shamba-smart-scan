@@ -6,8 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const queryMpesaTransaction = async (checkoutRequestId: string) => {
   try {
-    // Use a raw query to bypass TypeScript checking
-    const { data, error } = await supabase.rpc('get_mpesa_transaction', {
+    // Use a type casting for both the function and its parameters to bypass TypeScript checking
+    const { data, error } = await (supabase.rpc as any)('get_mpesa_transaction', {
       p_checkout_request_id: checkoutRequestId
     }) as { 
       data: { status: string; transaction_id: string } | null; 
@@ -31,8 +31,8 @@ export const queryMpesaTransaction = async (checkoutRequestId: string) => {
  */
 export const queryUserSubscription = async (userId: string) => {
   try {
-    // Use a raw query to bypass TypeScript checking
-    const { data, error } = await supabase.rpc('get_user_subscription', {
+    // Use a type casting for both the function and its parameters to bypass TypeScript checking
+    const { data, error } = await (supabase.rpc as any)('get_user_subscription', {
       p_user_id: userId
     }) as { 
       data: any; 
