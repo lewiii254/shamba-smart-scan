@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
+import { queryMpesaTransaction, queryUserSubscription } from "./mpesaHelper";
 
 interface MpesaPaymentRequest {
   phoneNumber: string;
@@ -60,28 +60,22 @@ export const checkMpesaPaymentStatus = async (
   try {
     console.log("Checking payment status for:", checkoutRequestId);
     
-    // Query the database directly for the payment status
-    const { data, error } = await supabase
-      .from('mpesa_transactions')
-      .select('status, transaction_id')
-      .eq('checkout_request_id', checkoutRequestId)
-      .single();
+    // Query the database using our helper function
+    const transactionData = await queryMpesaTransaction(checkoutRequestId);
     
-    if (error) throw error;
-    
-    if (!data) {
+    if (!transactionData) {
       return {
         success: false,
         message: "Payment not found"
       };
     }
     
-    const isCompleted = data.status === 'COMPLETED';
+    const isCompleted = transactionData.status === 'COMPLETED';
     
     return {
       success: isCompleted,
       message: isCompleted ? "Payment completed successfully" : "Payment is still processing",
-      transactionId: data.transaction_id
+      transactionId: transactionData.transaction_id
     };
   } catch (error) {
     console.error("Error checking M-Pesa payment status:", error);
@@ -101,18 +95,10 @@ export const getUserSubscriptionStatus = async () => {
     
     if (!user) return null;
     
-    const { data, error } = await supabase
-      .from('user_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-      
-    if (error) throw error;
+    // Use our helper function to query subscriptions
+    const subscriptionData = await queryUserSubscription(user.id);
     
-    return data;
+    return subscriptionData;
   } catch (error) {
     console.error("Error getting subscription status:", error);
     return null;
