@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { WeatherData } from "@/types/forum";
+import { WeatherData, getUserLocation, getWeatherData } from "@/services/weatherService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CloudSun, CloudRain, Wind, Droplets } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 const WeatherWidget: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState("Nairobi, Kenya");
+  const [location, setLocation] = useState("Loading...");
   const [error, setError] = useState("");
   const { toast } = useToast();
 
@@ -18,86 +18,34 @@ const WeatherWidget: React.FC = () => {
     const fetchWeather = async () => {
       setLoading(true);
       try {
-        // In a real application, this would be replaced with your actual weather API call
-        // For demo purposes, we'll simulate a successful API response
-        const mockWeatherData: WeatherData = {
-          location: location,
-          current: {
-            temp_c: 24,
-            condition: {
-              text: "Partly cloudy",
-              icon: "//cdn.weatherapi.com/weather/64x64/day/116.png"
-            },
-            wind_kph: 12,
-            humidity: 58,
-            precip_mm: 0.1
-          },
-          forecast: {
-            forecastday: [
-              {
-                date: new Date().toISOString().split('T')[0],
-                day: {
-                  maxtemp_c: 26,
-                  mintemp_c: 20,
-                  condition: {
-                    text: "Partly cloudy",
-                    icon: "//cdn.weatherapi.com/weather/64x64/day/116.png"
-                  },
-                  daily_chance_of_rain: 15
-                }
-              },
-              {
-                date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-                day: {
-                  maxtemp_c: 27,
-                  mintemp_c: 19,
-                  condition: {
-                    text: "Sunny",
-                    icon: "//cdn.weatherapi.com/weather/64x64/day/113.png"
-                  },
-                  daily_chance_of_rain: 5
-                }
-              },
-              {
-                date: new Date(Date.now() + 172800000).toISOString().split('T')[0],
-                day: {
-                  maxtemp_c: 25,
-                  mintemp_c: 18,
-                  condition: {
-                    text: "Light rain",
-                    icon: "//cdn.weatherapi.com/weather/64x64/day/296.png"
-                  },
-                  daily_chance_of_rain: 40
-                }
-              }
-            ]
-          }
-        };
+        // Get user's location
+        const { lat, lon } = await getUserLocation();
         
-        // Show toast to confirm data is loading
+        // Get weather data based on location
+        const data = await getWeatherData(lat, lon);
+        
+        setWeather(data);
+        setLocation(data.location);
+        
         toast({
           title: "Weather Data",
-          description: "Weather data has been loaded successfully for " + location,
+          description: `Weather data has been loaded successfully for ${data.location}`,
         });
-        
-        // Simulate network delay
-        setTimeout(() => {
-          setWeather(mockWeatherData);
-          setLoading(false);
-        }, 1000);
       } catch (err) {
+        console.error("Error in weather component:", err);
         setError("Failed to fetch weather data");
-        setLoading(false);
         toast({
           title: "Error",
           description: "Failed to fetch weather data",
           variant: "destructive"
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchWeather();
-  }, [location, toast]);
+  }, [toast]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -138,7 +86,7 @@ const WeatherWidget: React.FC = () => {
               <div className="text-right">
                 <div className="flex items-center">
                   <img 
-                    src={`https:${weather.current.condition.icon}`} 
+                    src={weather.current.condition.icon} 
                     alt={weather.current.condition.text}
                     className="h-10 w-10"
                   />
@@ -176,7 +124,7 @@ const WeatherWidget: React.FC = () => {
                     <div key={day.date} className="flex flex-col items-center p-2 border border-green-100 rounded-md">
                       <p className="text-xs font-medium">{formatDate(day.date)}</p>
                       <img 
-                        src={`https:${day.day.condition.icon}`} 
+                        src={day.day.condition.icon} 
                         alt={day.day.condition.text}
                         className="h-8 w-8 my-1"
                       />
