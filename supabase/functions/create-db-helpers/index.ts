@@ -11,15 +11,24 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Create the database tables and functions
+    // Create the database tables if they don't exist
     const { error: tablesError } = await supabase.rpc('create_mpesa_tables');
     if (tablesError) throw tablesError;
     
-    const { error: funcError1 } = await supabase.rpc('create_mpesa_transaction_function');
-    if (funcError1) throw funcError1;
+    // Create the transaction query function
+    const { error: mpesaTxFuncError } = await supabase.rpc('create_mpesa_transaction_function');
+    if (mpesaTxFuncError) throw mpesaTxFuncError;
     
-    const { error: funcError2 } = await supabase.rpc('create_user_subscription_function');
-    if (funcError2) throw funcError2;
+    // Create the subscription query function
+    const { error: subFuncError } = await supabase.rpc('create_user_subscription_function');
+    if (subFuncError) throw subFuncError;
+    
+    // Create the RPC functions for our TypeScript-safe queries
+    const createMpesaRPC = await supabase.rpc('create_get_mpesa_transaction_rpc');
+    const createSubRPC = await supabase.rpc('create_get_user_subscription_rpc');
+    
+    if (createMpesaRPC.error) throw createMpesaRPC.error;
+    if (createSubRPC.error) throw createSubRPC.error;
     
     return new Response(JSON.stringify({
       success: true,
