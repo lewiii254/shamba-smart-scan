@@ -44,11 +44,11 @@ const Navigation = ({ activeTab = "", setActiveTab = () => {} }: NavigationProps
                 </span>
               )}
             </div>
-            
-            {/* Desktop navigation */}
-            <div className="hidden md:ml-6 md:flex items-center space-x-4">
-              <NavItems activeTab={activeTab} setActiveTab={setActiveTab} />
-            </div>
+          </div>
+          
+          {/* Desktop navigation */}
+          <div className="hidden md:flex items-center">
+            <NavItems activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
           
           <div className="hidden md:flex items-center gap-3">
