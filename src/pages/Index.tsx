@@ -15,6 +15,7 @@ import DiagnosisResult from "@/components/scan/DiagnosisResult";
 import AIExplanation from "@/components/scan/AIExplanation";
 import ScanHistoryList from "@/components/history/ScanHistoryList";
 import AboutContent from "@/components/about/AboutContent";
+import TimelineIntegration from "@/components/scan/TimelineIntegration";
 
 type ScanResult = {
   id: string;
@@ -296,6 +297,11 @@ const Index = () => {
                 handleReset={handleReset}
               />
             </div>
+
+            <TimelineIntegration 
+              diagnosis={diagnosis}
+              image={image}
+            />
 
             <AIExplanation />
           </TabsContent>

@@ -15,6 +15,7 @@ import CommunityForum from "./pages/CommunityForum";
 import VideoLibrary from "./pages/VideoLibrary";
 import ProfilePage from "./pages/ProfilePage";
 import Subscription from "./pages/Subscription";
+import PlantTimeline from "./pages/PlantTimeline";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
 import { NotificationProvider } from "./components/NotificationProvider";
@@ -102,6 +103,13 @@ const App = () => {
                 <Route path="/subscription" element={
                   <PageTransition>
                     <Subscription />
+                  </PageTransition>
+                } />
+                <Route path="/plant-timeline" element={
+                  <PageTransition>
+                    <RequireAuth>
+                      <PlantTimeline />
+                    </RequireAuth>
                   </PageTransition>
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
