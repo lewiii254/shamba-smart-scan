@@ -7,7 +7,7 @@ import { useAuth } from "@/components/AuthProvider";
 import UserMenu from "./UserMenu";
 import NavItems from "./NavItems";
 
-const Navigation = () => {
+const Navigation = ({ activeTab = "", setActiveTab = () => {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
@@ -42,7 +42,7 @@ const Navigation = () => {
             
             {/* Desktop navigation */}
             <div className="hidden md:ml-6 md:flex items-center space-x-4">
-              <NavItems />
+              <NavItems activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
           </div>
           
@@ -85,7 +85,7 @@ const Navigation = () => {
       {/* Mobile menu */}
       <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
         <div className="pt-2 pb-3 space-y-1">
-          <NavItems mobile />
+          <NavItems activeTab={activeTab} setActiveTab={setActiveTab} isMobile={true} closeMenu={() => setIsOpen(false)} />
         </div>
         {/* Mobile auth buttons */}
         <div className="pt-4 pb-3 border-t border-gray-200">

@@ -19,7 +19,7 @@ const CommunityForum: React.FC = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("forum");
+  const [activeTab, setActiveTab] = useState("community-forum");
   const [activeCategory, setActiveCategory] = useState<ForumCategory>('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);

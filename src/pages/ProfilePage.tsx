@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/AuthProvider";
 import { videoTutorials } from "@/data/videoTutorials";
-import { VideoTutorialCard } from "@/components/video/VideoTutorialCard";
+import VideoTutorialCard from "@/components/video/VideoTutorialCard";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,6 +45,7 @@ const sampleActivities: ProfileActivity[] = [
 const ProfilePage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
     fullName: "John Doe",
@@ -103,7 +103,7 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navigation />
+      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

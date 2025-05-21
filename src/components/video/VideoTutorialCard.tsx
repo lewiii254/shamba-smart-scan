@@ -8,15 +8,21 @@ import { VideoTutorial } from "@/types/video";
 
 interface VideoTutorialCardProps {
   video: VideoTutorial;
-  onVideoClick: (videoId: string) => void;
+  onVideoClick?: (videoId: string) => void;
 }
 
 const VideoTutorialCard: React.FC<VideoTutorialCardProps> = ({ video, onVideoClick }) => {
+  const handleClick = () => {
+    if (onVideoClick) {
+      onVideoClick(video.id);
+    }
+  };
+
   return (
     <Card 
       key={video.id} 
       className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" 
-      onClick={() => onVideoClick(video.id)}
+      onClick={handleClick}
     >
       <div className="relative">
         <img 

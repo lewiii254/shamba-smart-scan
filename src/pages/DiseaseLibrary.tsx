@@ -15,6 +15,7 @@ import { diseaseData } from "@/data/diseases";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const DiseaseLibrary = () => {
+  const [activeTab, setActiveTab] = useState("disease-library");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDisease, setSelectedDisease] = useState<string | null>(null);
@@ -52,7 +53,7 @@ const DiseaseLibrary = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
-      <Navigation activeTab="" setActiveTab={() => {}} />
+      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
