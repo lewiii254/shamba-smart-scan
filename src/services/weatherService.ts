@@ -2,15 +2,15 @@
 import axios from 'axios';
 import { WeatherData } from '@/types/forum';
 
-const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
-const API_URL = process.env.NEXT_PUBLIC_WEATHER_API_URL;
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+const API_URL = import.meta.env.VITE_WEATHER_API_URL;
 
 if (!API_KEY) {
-  throw new Error('Weather API key is missing. Please set the NEXT_PUBLIC_WEATHER_API_KEY environment variable.');
+  throw new Error('Weather API key is missing. Please set the VITE_WEATHER_API_KEY environment variable.');
 }
 
 if (!API_URL) {
-  throw new Error('Weather API URL is missing. Please set the NEXT_PUBLIC_WEATHER_API_URL environment variable.');
+  throw new Error('Weather API URL is missing. Please set the VITE_WEATHER_API_URL environment variable.');
 }
 
 export const getUserLocation = async (): Promise<{ lat: number; lon: number }> => {
