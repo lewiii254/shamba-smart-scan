@@ -1,11 +1,12 @@
+
 import React, { useState, useEffect } from "react";
-import { forumPosts } from "@/data/forumPosts";
+import { useForum } from "@/hooks/use-forum";
 import ForumHeader from "@/components/forum/ForumHeader";
 import ForumCategories from "@/components/forum/ForumCategories";
 import PostCard from "@/components/forum/PostCard";
 import PostDetail from "@/components/forum/PostDetail";
 import WeatherWidget from "@/components/weather/WeatherWidget";
-import { ForumCategory, ForumPost, NewPostData } from "@/types/forum";
+import { ForumCategory, NewPostData } from "@/types/forum";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navigation from "@/components/layout/Navigation";
 import FooterSection from "@/components/landing/FooterSection";
@@ -18,12 +19,12 @@ const CommunityForum: React.FC = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { posts, loading, createPost, addComment, toggleLike } = useForum();
   const [activeTab, setActiveTab] = useState("community-forum");
   const [activeCategory, setActiveCategory] = useState<ForumCategory>('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
-  const [posts, setPosts] = useState<ForumPost[]>(forumPosts);
-  const [filteredPosts, setFilteredPosts] = useState<ForumPost[]>(forumPosts);
+  const [filteredPosts, setFilteredPosts] = useState(posts);
   
   // Update the active tab
   useEffect(() => {
@@ -69,7 +70,7 @@ const CommunityForum: React.FC = () => {
     navigate('/community-forum');
   };
 
-  const handleNewPost = (postData: NewPostData) => {
+  const handleNewPost = async (postData: NewPostData) => {
     if (!user) {
       toast({
         title: "Error",
@@ -80,33 +81,33 @@ const CommunityForum: React.FC = () => {
       return;
     }
 
-    const newPost: ForumPost = {
-      id: `temp-${Date.now()}`,
-      title: postData.title,
-      content: postData.content,
-      authorId: user.id || 'unknown',
-      authorName: user.user_metadata?.full_name || user.email || 'Anonymous',
-      authorAvatar: user.user_metadata?.avatar_url,
-      createdAt: new Date().toISOString(),
-      tags: postData.tags,
-      likes: 0,
-      comments: []
-    };
-
-    setPosts([newPost, ...posts]);
-    
-    toast({
-      title: "Success",
-      description: "Your post has been published successfully!",
-    });
-    
-    // Navigate to the newly created post
-    setTimeout(() => {
-      handlePostClick(newPost.id);
-    }, 300);
+    const success = await createPost(postData);
+    if (success) {
+      // Find the newest post (should be the one just created)
+      const newestPost = posts[0];
+      if (newestPost) {
+        setTimeout(() => {
+          handlePostClick(newestPost.id);
+        }, 300);
+      }
+    }
   };
   
   const selectedPost = posts.find(post => post.id === selectedPostId);
+  
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gradient-to-b from-green-50 to-white">
+        <Navigation activeTab={activeTab} setActiveTab={(tab) => setActiveTab(tab)} />
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center py-12">
+            <p className="text-xl text-green-700">Loading forum posts...</p>
+          </div>
+        </main>
+        <FooterSection />
+      </div>
+    );
+  }
   
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -114,7 +115,12 @@ const CommunityForum: React.FC = () => {
       
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {selectedPost ? (
-          <PostDetail post={selectedPost} onBack={handleBackClick} />
+          <PostDetail 
+            post={selectedPost} 
+            onBack={handleBackClick}
+            onAddComment={addComment}
+            onToggleLike={toggleLike}
+          />
         ) : (
           <>
             <ForumHeader onSearch={setSearchQuery} onNewPost={handleNewPost} />
@@ -132,7 +138,8 @@ const CommunityForum: React.FC = () => {
                       <PostCard 
                         key={post.id} 
                         post={post} 
-                        onClick={handlePostClick} 
+                        onClick={handlePostClick}
+                        onToggleLike={toggleLike}
                       />
                     ))}
                   </div>

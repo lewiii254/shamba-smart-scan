@@ -147,7 +147,7 @@ export const getWeatherData = async (lat: number, lon: number): Promise<WeatherD
       }, {});
       
       const mostCommonIcon = Object.entries(iconCounts)
-        .sort((a, b) => b[1] - a[1])[0][0];
+        .sort((a, b) => (b[1] as number) - (a[1] as number))[0][0];
       
       const descriptionCounts = dayData.descriptions.reduce((acc: {[key: string]: number}, desc: string) => {
         acc[desc] = (acc[desc] || 0) + 1;
@@ -155,7 +155,7 @@ export const getWeatherData = async (lat: number, lon: number): Promise<WeatherD
       }, {});
       
       const mostCommonDescription = Object.entries(descriptionCounts)
-        .sort((a, b) => b[1] - a[1])[0][0];
+        .sort((a, b) => (b[1] as number) - (a[1] as number))[0][0];
       
       // Calculate chance of rain (max probability of precipitation)
       const maxPrecipChance = Math.round(Math.max(...dayData.precipChances));
