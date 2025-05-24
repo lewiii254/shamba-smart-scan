@@ -190,6 +190,12 @@ export const getWeatherData = async (lat: number, lon: number): Promise<WeatherD
 
 // Provide mock weather data as a fallback
 const getMockWeatherData = (): WeatherData => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const dayAfterTomorrow = new Date(today);
+  dayAfterTomorrow.setDate(today.getDate() + 2);
+
   return {
     location: "Nairobi, Kenya",
     current: {
@@ -205,7 +211,7 @@ const getMockWeatherData = (): WeatherData => {
     forecast: {
       forecastday: [
         {
-          date: new Date().toISOString().split('T')[0],
+          date: today.toISOString().split('T')[0],
           day: {
             maxtemp_c: 26,
             mintemp_c: 20,
@@ -217,7 +223,7 @@ const getMockWeatherData = (): WeatherData => {
           }
         },
         {
-          date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+          date: tomorrow.toISOString().split('T')[0],
           day: {
             maxtemp_c: 27,
             mintemp_c: 19,
@@ -229,7 +235,7 @@ const getMockWeatherData = (): WeatherData => {
           }
         },
         {
-          date: new Date(Date.now() + 172800000).toISOString().split('T')[0],
+          date: dayAfterTomorrow.toISOString().split('T')[0],
           day: {
             maxtemp_c: 25,
             mintemp_c: 18,

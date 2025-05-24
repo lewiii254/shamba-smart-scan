@@ -109,11 +109,10 @@ const TimelinePage = () => {
       </div>
       
       <AddTimelineEntryModal
-        open={isModalOpen}
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddEntry}
-        initialDiagnosis={diagnosisFromScan}
-        initialImage={imageFromScan}
+        currentImage={imageFromScan}
       />
       
       <Footer />
