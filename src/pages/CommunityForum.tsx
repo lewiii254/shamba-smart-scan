@@ -19,7 +19,7 @@ const CommunityForum: React.FC = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const { posts, loading, createPost, addComment, toggleLike } = useForum();
+  const { posts, loading, createPost, addComment, toggleLike, refreshPosts } = useForum();
   const [activeTab, setActiveTab] = useState("community-forum");
   const [activeCategory, setActiveCategory] = useState<ForumCategory>('all');
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,13 +83,14 @@ const CommunityForum: React.FC = () => {
 
     const success = await createPost(postData);
     if (success) {
-      // Find the newest post (should be the one just created)
-      const newestPost = posts[0];
-      if (newestPost) {
-        setTimeout(() => {
-          handlePostClick(newestPost.id);
-        }, 300);
-      }
+      // Refresh posts and find the newest one (should be the one just created)
+      await refreshPosts();
+      setTimeout(() => {
+        // The newest post should be at the top after refresh
+        if (posts.length > 0) {
+          handlePostClick(posts[0].id);
+        }
+      }, 500);
     }
   };
   
