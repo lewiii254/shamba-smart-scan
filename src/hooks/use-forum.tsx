@@ -48,71 +48,65 @@ export const useForum = () => {
     try {
       setLoading(true);
       
-      // Use raw SQL query to fetch posts since TypeScript types are not updated yet
+      // Fetch posts directly from the forum_posts table
       const { data: postsData, error } = await supabase
-        .rpc('get_forum_posts_with_data', {});
+        .from('forum_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) {
-        // Fallback to direct table access if RPC doesn't exist
-        console.log('RPC not found, using direct table access');
-        const { data: directPostsData, error: directError } = await supabase
-          .from('forum_posts' as any)
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (directError) throw directError;
-
-        // Fetch comments and likes for each post
-        const postsWithData = await Promise.all(
-          (directPostsData || []).map(async (post: any) => {
-            // Fetch comments
-            const { data: comments } = await supabase
-              .from('forum_comments' as any)
-              .select('*')
-              .eq('post_id', post.id)
-              .order('created_at', { ascending: true });
-
-            // Check if user has liked this post
-            let userHasLiked = false;
-            if (user) {
-              const { data: userLike } = await supabase
-                .from('forum_likes' as any)
-                .select('id')
-                .eq('user_id', user.id)
-                .eq('post_id', post.id)
-                .maybeSingle();
-              userHasLiked = !!userLike;
-            }
-
-            // Check if user has liked each comment
-            const commentsWithLikes = await Promise.all(
-              (comments || []).map(async (comment: any) => {
-                let commentUserHasLiked = false;
-                if (user) {
-                  const { data: userCommentLike } = await supabase
-                    .from('forum_likes' as any)
-                    .select('id')
-                    .eq('user_id', user.id)
-                    .eq('comment_id', comment.id)
-                    .maybeSingle();
-                  commentUserHasLiked = !!userCommentLike;
-                }
-                return { ...comment, user_has_liked: commentUserHasLiked };
-              })
-            );
-
-            return {
-              ...post,
-              comments: commentsWithLikes,
-              user_has_liked: userHasLiked
-            } as ForumPost;
-          })
-        );
-
-        setPosts(postsWithData);
-      } else {
-        setPosts(postsData || []);
+        console.error('Error fetching posts:', error);
+        throw error;
       }
+
+      // Fetch comments and likes for each post
+      const postsWithData = await Promise.all(
+        (postsData || []).map(async (post: any) => {
+          // Fetch comments
+          const { data: comments } = await supabase
+            .from('forum_comments')
+            .select('*')
+            .eq('post_id', post.id)
+            .order('created_at', { ascending: true });
+
+          // Check if user has liked this post
+          let userHasLiked = false;
+          if (user) {
+            const { data: userLike } = await supabase
+              .from('forum_likes')
+              .select('id')
+              .eq('user_id', user.id)
+              .eq('post_id', post.id)
+              .maybeSingle();
+            userHasLiked = !!userLike;
+          }
+
+          // Check if user has liked each comment
+          const commentsWithLikes = await Promise.all(
+            (comments || []).map(async (comment: any) => {
+              let commentUserHasLiked = false;
+              if (user) {
+                const { data: userCommentLike } = await supabase
+                  .from('forum_likes')
+                  .select('id')
+                  .eq('user_id', user.id)
+                  .eq('comment_id', comment.id)
+                  .maybeSingle();
+                commentUserHasLiked = !!userCommentLike;
+              }
+              return { ...comment, user_has_liked: commentUserHasLiked };
+            })
+          );
+
+          return {
+            ...post,
+            comments: commentsWithLikes,
+            user_has_liked: userHasLiked
+          } as ForumPost;
+        })
+      );
+
+      setPosts(postsWithData);
     } catch (error) {
       console.error('Error fetching posts:', error);
       toast({
@@ -137,7 +131,7 @@ export const useForum = () => {
 
     try {
       const { error } = await supabase
-        .from('forum_posts' as any)
+        .from('forum_posts')
         .insert({
           title: postData.title,
           content: postData.content,
@@ -179,7 +173,7 @@ export const useForum = () => {
 
     try {
       const { error } = await supabase
-        .from('forum_comments' as any)
+        .from('forum_comments')
         .insert({
           post_id: postId,
           content,
@@ -220,17 +214,23 @@ export const useForum = () => {
 
     try {
       // Check if user has already liked
-      const { data: existingLike } = await supabase
-        .from('forum_likes' as any)
+      const query = supabase
+        .from('forum_likes')
         .select('id')
-        .eq('user_id', user.id)
-        .eq(postId ? 'post_id' : 'comment_id', postId || commentId)
-        .maybeSingle();
+        .eq('user_id', user.id);
+
+      if (postId) {
+        query.eq('post_id', postId);
+      } else if (commentId) {
+        query.eq('comment_id', commentId);
+      }
+
+      const { data: existingLike } = await query.maybeSingle();
 
       if (existingLike) {
         // Unlike
         const { error } = await supabase
-          .from('forum_likes' as any)
+          .from('forum_likes')
           .delete()
           .eq('id', existingLike.id);
 
@@ -238,7 +238,7 @@ export const useForum = () => {
       } else {
         // Like
         const { error } = await supabase
-          .from('forum_likes' as any)
+          .from('forum_likes')
           .insert({
             user_id: user.id,
             post_id: postId || null,
