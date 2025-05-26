@@ -2,7 +2,9 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { X, ExternalLink, BookmarkPlus, Share2 } from "lucide-react";
 import { VideoTutorial } from "@/types/video";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,30 +20,72 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
   if (!video) return null;
   
   const handleWatchLater = () => {
-    toast({
-      title: "Added to Watch Later",
-      description: `${video.title} has been added to your watch later list.`,
-      duration: 3000,
-    });
-    onClose();
+    // Store in localStorage for persistence
+    const watchLater = JSON.parse(localStorage.getItem('watchLater') || '[]');
+    if (!watchLater.find((v: any) => v.id === video.id)) {
+      watchLater.push(video);
+      localStorage.setItem('watchLater', JSON.stringify(watchLater));
+      toast({
+        title: "Added to Watch Later",
+        description: `${video.title} has been saved to your watch later list.`,
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: "Already in Watch Later",
+        description: "This video is already in your watch later list.",
+        duration: 2000,
+      });
+    }
   };
   
-  const handleShare = () => {
-    // Copy video URL to clipboard
-    navigator.clipboard.writeText(`https://www.youtube.com/watch?v=${video.youtubeId}`);
+  const handleShare = async () => {
+    const videoUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
     
-    toast({
-      title: "Link Copied!",
-      description: "Video link has been copied to your clipboard.",
-      duration: 3000,
-    });
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: video.title,
+          text: video.description,
+          url: videoUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(videoUrl);
+        toast({
+          title: "Link Copied!",
+          description: "Video link has been copied to your clipboard.",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({
+        title: "Share Failed",
+        description: "Unable to share video. Please try again.",
+        duration: 3000,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleOpenInYouTube = () => {
+    window.open(`https://www.youtube.com/watch?v=${video.youtubeId}`, '_blank');
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[850px] p-0">
+      <DialogContent className="sm:max-w-[900px] p-0">
         <DialogHeader className="p-4 flex flex-row items-center justify-between">
-          <DialogTitle className="text-xl text-amber-800">{video.title}</DialogTitle>
+          <div className="flex-1 mr-4">
+            <DialogTitle className="text-xl text-amber-800 line-clamp-2">{video.title}</DialogTitle>
+            <div className="flex items-center mt-2 space-x-4">
+              <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                {video.category.charAt(0).toUpperCase() + video.category.slice(1)}
+              </Badge>
+              <span className="text-sm text-gray-500">{video.duration}</span>
+              <span className="text-sm text-gray-500">{video.views} views</span>
+            </div>
+          </div>
           <DialogClose asChild>
             <Button variant="ghost" size="icon">
               <X className="h-4 w-4" />
@@ -52,53 +96,58 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
           Video tutorial: {video.title}
         </DialogDescription>
         
-        {/* ===========================================================
-         * 🔴 YOUTUBE IFRAME CUSTOMIZATION 🔴
-         * 
-         * INSTRUCTIONS:
-         * 1. You can customize the appearance and behavior of the YouTube player below
-         * 2. To add a custom YouTube video, replace the "youtubeId" parameter in your code 
-         * 3. Add custom player controls by modifying these URL parameters:
-         *    - autoplay=1: Auto-plays when loaded
-         *    - controls=0: Hides YouTube controls
-         *    - rel=0: Doesn't show related videos
-         *    - modestbranding=1: Minimizes YouTube branding
-         *    - fs=1: Enables fullscreen button (0 to disable)
-         *    - loop=1: Loops the video
-         *    - start=30: Starts playing at 30 seconds
-         *
-         * Example optimized for maximum customization:
-         * src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&rel=0&modestbranding=1&controls=1`}
-         * =========================================================== */}
-        <div className="aspect-video w-full">
+        {/* YouTube Video Player */}
+        <div className="aspect-video w-full bg-black">
           <iframe 
             width="100%" 
             height="100%" 
-            src={`https://www.youtube.com/embed/${video.youtubeId}?si=IOQBFjdQ8UG7Ay9H`} 
+            src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=0&rel=0&modestbranding=1&controls=1&showinfo=0`} 
             title={video.title}
             frameBorder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
             referrerPolicy="strict-origin-when-cross-origin" 
             allowFullScreen
+            className="w-full h-full"
           ></iframe>
         </div>
-        {/* 🔴 END OF YOUTUBE IFRAME CUSTOMIZATION 🔴 */}
         
         <div className="p-4">
-          <h3 className="font-semibold text-amber-800">{video.instructor.name}</h3>
-          <p className="text-amber-700 mt-2">{video.description}</p>
-          <div className="flex justify-between items-center mt-4">
-            <div className="flex space-x-2">
+          {/* Instructor Info */}
+          <div className="flex items-center mb-4">
+            <Avatar className="h-12 w-12 mr-3">
+              <AvatarImage src={video.instructor.avatar} />
+              <AvatarFallback className="bg-amber-100 text-amber-800">
+                {video.instructor.initials}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="font-semibold text-amber-800">{video.instructor.name}</h3>
+              <p className="text-sm text-gray-600">Agricultural Expert</p>
+            </div>
+          </div>
+          
+          {/* Video Description */}
+          <p className="text-amber-700 mb-4 leading-relaxed">{video.description}</p>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2 justify-between items-center">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" onClick={handleWatchLater}>
+                <BookmarkPlus className="h-4 w-4 mr-1" />
                 Watch Later
               </Button>
               <Button variant="outline" size="sm" onClick={handleShare}>
+                <Share2 className="h-4 w-4 mr-1" />
                 Share
               </Button>
+              <Button variant="outline" size="sm" onClick={handleOpenInYouTube}>
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Open in YouTube
+              </Button>
             </div>
-            <div className="flex flex-col items-end">
-              <span className="text-sm text-gray-500">{video.views} views</span>
-              <span className="text-sm text-gray-500">Category: {video.category.charAt(0).toUpperCase() + video.category.slice(1)}</span>
+            
+            <div className="text-right">
+              <p className="text-sm text-gray-500">Category: {video.category.charAt(0).toUpperCase() + video.category.slice(1)}</p>
             </div>
           </div>
         </div>
