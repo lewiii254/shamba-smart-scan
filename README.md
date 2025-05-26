@@ -19,6 +19,8 @@ Welcome to **AI Crop Doctor** — your AI-powered assistant for diagnosing plant
 
 > "Revolutionize how you care for your crops — with the power of Artificial Intelligence!"
 
+## [Pitch Deck Link👆](https://gamma.app/docs/AI-Crop-Doctor-Revolutionizing-Agricultural-Health-Management-Thr-h7b22b158q3vgu4)
+
 ---
 
 ## 🌟 Introduction
