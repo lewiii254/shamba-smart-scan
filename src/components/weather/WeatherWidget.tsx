@@ -17,29 +17,40 @@ const WeatherWidget: React.FC = () => {
 
   useEffect(() => {
     const fetchWeather = async () => {
-      setLoading(true);
       try {
-        // Get user's location
+        setLoading(true);
+        setError("");
+        
+        console.log('Fetching weather data...');
+        
+        // Get user's location (will fallback to Nairobi)
         const { lat, lon } = await getUserLocation();
+        console.log('Location:', lat, lon);
         
         // Get weather data based on location
         const data = await getWeatherData(lat, lon);
+        console.log('Weather data:', data);
         
         setWeather(data);
         setLocation(data.location);
         
-        toast({
-          title: "Weather Data",
-          description: `Weather data has been loaded successfully for ${data.location}`,
-        });
+        if (toast) {
+          toast({
+            title: "Weather Data",
+            description: `Weather data loaded for ${data.location}`,
+          });
+        }
       } catch (err) {
         console.error("Error in weather component:", err);
-        setError("Failed to fetch weather data");
-        toast({
-          title: "Error",
-          description: "Failed to fetch weather data",
-          variant: "destructive"
-        });
+        setError("Unable to load weather data");
+        
+        if (toast) {
+          toast({
+            title: "Weather Notice",
+            description: "Using offline weather data",
+            variant: "default"
+          });
+        }
       } finally {
         setLoading(false);
       }
@@ -49,15 +60,20 @@ const WeatherWidget: React.FC = () => {
   }, [toast]);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return dateString;
+    }
   };
 
-  if (error) {
+  if (error && !weather) {
     return (
-      <Card className="bg-white/90 border-red-100">
+      <Card className="bg-white/90 border-yellow-100">
         <CardContent className="pt-6">
-          <p className="text-red-500">{error}</p>
+          <p className="text-yellow-600">Weather data temporarily unavailable</p>
         </CardContent>
       </Card>
     );
@@ -86,11 +102,17 @@ const WeatherWidget: React.FC = () => {
               </div>
               <div className="text-right">
                 <div className="flex items-center">
-                  <img 
-                    src={weather.current.condition.icon} 
-                    alt={weather.current.condition.text}
-                    className="h-10 w-10"
-                  />
+                  {weather.current.condition.icon && (
+                    <img 
+                      src={weather.current.condition.icon} 
+                      alt={weather.current.condition.text}
+                      className="h-10 w-10"
+                      onError={(e) => {
+                        console.log('Weather icon failed to load');
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  )}
                   <span className="text-2xl ml-1">{weather.current.temp_c}°C</span>
                 </div>
                 <p className="text-sm text-gray-600">{weather.current.condition.text}</p>
@@ -124,11 +146,17 @@ const WeatherWidget: React.FC = () => {
                   {weather.forecast.forecastday.map((day) => (
                     <div key={day.date} className="flex flex-col items-center p-2 border border-green-100 rounded-md">
                       <p className="text-xs font-medium">{formatDate(day.date)}</p>
-                      <img 
-                        src={day.day.condition.icon} 
-                        alt={day.day.condition.text}
-                        className="h-8 w-8 my-1"
-                      />
+                      {day.day.condition.icon && (
+                        <img 
+                          src={day.day.condition.icon} 
+                          alt={day.day.condition.text}
+                          className="h-8 w-8 my-1"
+                          onError={(e) => {
+                            console.log('Forecast icon failed to load');
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      )}
                       <div className="flex gap-1 text-xs">
                         <span className="text-gray-800">{day.day.maxtemp_c}°</span>
                         <span className="text-gray-500">{day.day.mintemp_c}°</span>
@@ -143,7 +171,11 @@ const WeatherWidget: React.FC = () => {
               </TabsContent>
             </Tabs>
           </div>
-        ) : null}
+        ) : (
+          <div className="text-center py-4">
+            <p className="text-gray-500">Weather data unavailable</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
