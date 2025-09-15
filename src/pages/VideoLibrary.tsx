@@ -23,7 +23,7 @@ const VideoLibrary: React.FC = () => {
   
   // Filter and sort videos
   const filteredAndSortedVideos = useMemo(() => {
-    let filtered = videoTutorials.filter(video => {
+    const filtered = videoTutorials.filter(video => {
       const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             video.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             video.instructor.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -34,14 +34,16 @@ const VideoLibrary: React.FC = () => {
     // Sort videos
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case "views":
+        case "views": {
           const aViews = parseInt(a.views.replace(/[^\d]/g, ''));
           const bViews = parseInt(b.views.replace(/[^\d]/g, ''));
           return bViews - aViews;
-        case "duration":
+        }
+        case "duration": {
           const aDuration = a.duration.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
           const bDuration = b.duration.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
           return bDuration - aDuration;
+        }
         case "title":
           return a.title.localeCompare(b.title);
         default:
