@@ -19,6 +19,10 @@ import PlantTimeline from "./pages/PlantTimeline";
 import { AuthProvider } from "./components/AuthProvider";
 import { RequireAuth } from "./components/RequireAuth";
 import { NotificationProvider } from "./components/NotificationProvider";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import DroneAnalysis from "./pages/DroneAnalysis";
+import PestPrediction from "./pages/PestPrediction";
+import Partnerships from "./pages/Partnerships";
 
 // Page transition wrapper
 const PageTransition = ({ children }: { children: React.ReactNode }) => {
@@ -44,8 +48,9 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <NotificationProvider>
-          <TooltipProvider>
+        <LanguageProvider>
+          <NotificationProvider>
+            <TooltipProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -112,12 +117,28 @@ const App = () => {
                     </RequireAuth>
                   </PageTransition>
                 } />
+                <Route path="/drone-analysis" element={
+                  <PageTransition>
+                    <DroneAnalysis />
+                  </PageTransition>
+                } />
+                <Route path="/pest-prediction" element={
+                  <PageTransition>
+                    <PestPrediction />
+                  </PageTransition>
+                } />
+                <Route path="/partnerships" element={
+                  <PageTransition>
+                    <Partnerships />
+                  </PageTransition>
+                } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
         </NotificationProvider>
+      </LanguageProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

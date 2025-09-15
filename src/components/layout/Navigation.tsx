@@ -6,6 +6,8 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import UserMenu from "./UserMenu";
 import NavItems from "./NavItems";
+import LanguageSelector from '../language/LanguageSelector';
+import VoiceAssistant from '../voice/VoiceAssistant';
 
 interface NavigationProps {
   activeTab?: string;
@@ -52,6 +54,8 @@ const Navigation = ({ activeTab = "", setActiveTab = () => {} }: NavigationProps
           </div>
           
           <div className="hidden md:flex items-center gap-3">
+            <VoiceAssistant />
+            <LanguageSelector />
             {user ? (
               <>
                 <Link to="/subscription">

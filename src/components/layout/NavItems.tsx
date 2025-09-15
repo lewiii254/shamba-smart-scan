@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Leaf, Camera, History, MessageSquare, BookOpen, Users, Video, Info } from "lucide-react";
+import { Leaf, Camera, History, MessageSquare, BookOpen, Users, Video, Info, Plane, Bug, HandHeart } from "lucide-react";
 
 interface NavItemsProps {
   activeTab: string;
@@ -47,6 +47,24 @@ export const navItems = [
     path: "/specialist-chat", 
     icon: <MessageSquare className="h-5 w-5 mr-1" />,
     authRequired: true
+  },
+  { 
+    name: "Drone Analysis", 
+    path: "/drone-analysis", 
+    icon: <Plane className="h-5 w-5 mr-1" />,
+    authRequired: false
+  },
+  { 
+    name: "Pest Prediction", 
+    path: "/pest-prediction", 
+    icon: <Bug className="h-5 w-5 mr-1" />,
+    authRequired: false
+  },
+  { 
+    name: "Partnerships", 
+    path: "/partnerships", 
+    icon: <HandHeart className="h-5 w-5 mr-1" />,
+    authRequired: false
   },
   { 
     name: "About", 

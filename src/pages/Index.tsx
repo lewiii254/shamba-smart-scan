@@ -16,6 +16,8 @@ import AIExplanation from "@/components/scan/AIExplanation";
 import ScanHistoryList from "@/components/history/ScanHistoryList";
 import AboutContent from "@/components/about/AboutContent";
 import TimelineIntegration from "@/components/scan/TimelineIntegration";
+import VoiceAssistant from "@/components/voice/VoiceAssistant";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type ScanResult = {
   id: string;
@@ -67,6 +69,7 @@ const diseases = [
 const Index = () => {
   const location = useLocation();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [image, setImage] = useState<string | null>(null);
   const [advice, setAdvice] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
@@ -273,9 +276,20 @@ const Index = () => {
           
           <TabsContent value="scan" className="space-y-4">
             <ScanHeader 
-              title="Crop Doctor AI"
-              description="Our advanced AI model analyzes plant images to detect diseases and provide treatment recommendations"
+              title={t('scan.title')}
+              description={t('scan.description')}
             />
+            
+            <div className="flex justify-center mb-4">
+              <VoiceAssistant 
+                textToSpeak={diagnosis ? `${diagnosis}. ${advice}` : undefined}
+                onVoiceCommand={(command) => {
+                  if (command.toLowerCase().includes('analyze') || command.toLowerCase().includes('scan')) {
+                    handleAnalyze();
+                  }
+                }}
+              />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ImageUpload 
