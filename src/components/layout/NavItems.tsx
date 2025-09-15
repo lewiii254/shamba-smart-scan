@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   Camera, History, MessageSquare, BookOpen, Users, Video, Info, 
-  Plane, Bug, HandHeart, ChevronDown, Settings, MoreHorizontal 
+  Plane, Bug, HandHeart, ChevronDown, Settings, MoreHorizontal, Calendar 
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -32,6 +32,12 @@ export const primaryNavItems = [
     name: "History", 
     path: "/history", 
     icon: <History className="h-4 w-4 mr-1" />,
+    authRequired: true
+  },
+  { 
+    name: "Timeline", 
+    path: "/plant-timeline", 
+    icon: <Calendar className="h-4 w-4 mr-1" />,
     authRequired: true
   },
   { 
