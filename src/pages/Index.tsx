@@ -13,11 +13,11 @@ import Footer from "@/components/layout/Footer";
 import ScanHeader from "@/components/scan/ScanHeader";
 import ImageUpload from "@/components/scan/ImageUpload";
 import DiagnosisResult from "@/components/scan/DiagnosisResult";
-import AIExplanation from "@/components/scan/AIExplanation";
 import ScanHistoryList from "@/components/history/ScanHistoryList";
 import AboutContent from "@/components/about/AboutContent";
 import TimelineIntegration from "@/components/scan/TimelineIntegration";
-import VoiceAssistant from "@/components/voice/VoiceAssistant";
+import QuickActions from "@/components/dashboard/QuickActions";
+import RecentActivity from "@/components/dashboard/RecentActivity";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type ScanResult = {
@@ -270,9 +270,15 @@ const Index = () => {
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="scan" className="text-lg" onClick={() => window.history.pushState(null, "", "/scan")}>Scan</TabsTrigger>
-            <TabsTrigger value="history" className="text-lg" onClick={() => window.history.pushState(null, "", "/history")}>History</TabsTrigger>
-            <TabsTrigger value="about" className="text-lg" onClick={() => window.history.pushState(null, "", "/about")}>About</TabsTrigger>
+            <TabsTrigger value="scan" className="text-lg" onClick={() => window.history.pushState(null, "", "/scan")}>
+              🔍 Scan Plant
+            </TabsTrigger>
+            <TabsTrigger value="history" className="text-lg" onClick={() => window.history.pushState(null, "", "/history")}>
+              📊 Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="about" className="text-lg" onClick={() => window.history.pushState(null, "", "/about")}>
+              ℹ️ About AI
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="scan" className="space-y-6">
@@ -400,9 +406,14 @@ const Index = () => {
           
           <TabsContent value="history">
             <ScanHeader 
-              title="AI Scan History"
-              description="Review your previous plant diagnoses and treatments"
+              title="Dashboard Overview"
+              description="Manage your plant health data and access key features"
             />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <QuickActions />
+              <RecentActivity />
+            </div>
             
             <ScanHistoryList 
               scanHistory={scanHistory}
