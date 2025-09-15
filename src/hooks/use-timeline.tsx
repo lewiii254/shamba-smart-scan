@@ -1,9 +1,20 @@
 
 import { useContext, createContext, useState, useEffect, ReactNode } from "react";
 
+interface TimelineItem {
+  id: string;
+  date: string;
+  diagnosis: string;
+  image?: string;
+  treatment?: string;
+  confidence?: number;
+  plantType?: string;
+  location?: string;
+}
+
 type TimelineContextType = {
-  addToTimeline: (data: any) => void;
-  timelineItems: any[];
+  addToTimeline: (data: Partial<TimelineItem>) => void;
+  timelineItems: TimelineItem[];
 };
 
 const TimelineContext = createContext<TimelineContextType>({
@@ -12,7 +23,7 @@ const TimelineContext = createContext<TimelineContextType>({
 });
 
 export const TimelineProvider = ({ children }: { children: ReactNode }) => {
-  const [timelineItems, setTimelineItems] = useState<any[]>([]);
+  const [timelineItems, setTimelineItems] = useState<TimelineItem[]>([]);
 
   // Load timeline items from localStorage on mount
   useEffect(() => {
@@ -27,8 +38,14 @@ export const TimelineProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const addToTimeline = (data: any) => {
-    const updatedItems = [...timelineItems, data];
+  const addToTimeline = (data: Partial<TimelineItem>) => {
+    const newItem: TimelineItem = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      diagnosis: 'Unknown',
+      ...data,
+    };
+    const updatedItems = [...timelineItems, newItem];
     setTimelineItems(updatedItems);
     localStorage.setItem("plantTimelineEntries", JSON.stringify(updatedItems));
   };

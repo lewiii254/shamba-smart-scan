@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navigation from "@/components/layout/Navigation";
+import { Disease } from "@/types/disease";
 import Footer from "@/components/layout/Footer";
 import DiseaseDetail from "@/components/disease/DiseaseDetail";
 import { diseaseData } from "@/data/diseases";
@@ -187,7 +188,7 @@ const DiseaseLibrary = () => {
 
 // Disease Card Component
 interface DiseaseCardProps {
-  disease: any;
+  disease: Disease;
   onSelect: (id: string) => void;
   isSelected: boolean;
 }

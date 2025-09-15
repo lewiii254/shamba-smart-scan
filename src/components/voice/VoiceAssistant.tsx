@@ -4,11 +4,37 @@ import { Mic, MicOff, Volume2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 
+// Define interfaces for speech recognition
+interface SpeechRecognitionEvent {
+  results: {
+    [key: number]: {
+      [key: number]: {
+        transcript: string;
+      };
+    };
+  };
+}
+
+interface SpeechRecognitionError {
+  error: string;
+}
+
+interface SpeechRecognitionInstance {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: SpeechRecognitionError) => void;
+  onend: () => void;
+  start: () => void;
+  stop: () => void;
+}
+
 // Extend Window interface for speech recognition
 declare global {
   interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
+    SpeechRecognition: new() => SpeechRecognitionInstance;
+    webkitSpeechRecognition: new() => SpeechRecognitionInstance;
   }
 }
 
@@ -19,7 +45,7 @@ interface VoiceAssistantProps {
 
 const VoiceAssistant: React.FC<VoiceAssistantProps> = ({ onVoiceCommand, textToSpeak }) => {
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<any>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognitionInstance | null>(null);
   const { currentLanguage, t } = useLanguage();
   const { toast } = useToast();
 

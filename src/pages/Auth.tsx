@@ -10,6 +10,8 @@ import { Leaf, Lock, Mail, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { mockDataService } from "@/services/mockDataService";
+import { useAuth } from "@/components/AuthProvider";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -20,6 +22,7 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState("login");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isUsingMockData } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,23 +37,36 @@ const Auth = () => {
 
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
       
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
+      if (isUsingMockData) {
+        // Use mock data service
+        const { user, error } = await mockDataService.signIn(email, password);
+        if (error) throw new Error(error);
+        
+        toast({
+          title: "Login successful (Demo Mode)",
+          description: "Welcome! You're using demo mode with sample data.",
+        });
+      } else {
+        // Use real Supabase
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+      }
       
       navigate("/scan");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An error occurred during login";
       toast({
         title: "Login failed",
-        description: error.message || "An error occurred during login",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -71,29 +87,45 @@ const Auth = () => {
 
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username,
-            full_name: fullName,
+      
+      if (isUsingMockData) {
+        // Use mock data service
+        const { user, error } = await mockDataService.signUp(email, password, username, fullName);
+        if (error) throw new Error(error);
+        
+        toast({
+          title: "Registration successful (Demo Mode)",
+          description: "Account created! You can now sign in with your credentials.",
+        });
+        
+        setActiveTab("login");
+      } else {
+        // Use real Supabase
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username,
+              full_name: fullName,
+            },
           },
-        },
-      });
+        });
 
-      if (error) throw error;
-      
-      toast({
-        title: "Registration successful",
-        description: "Your account has been created. Please check your email for verification.",
-      });
-      
-      setActiveTab("login");
-    } catch (error: any) {
+        if (error) throw error;
+        
+        toast({
+          title: "Registration successful",
+          description: "Your account has been created. Please check your email for verification.",
+        });
+        
+        setActiveTab("login");
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An error occurred during registration";
       toast({
         title: "Registration failed",
-        description: error.message || "An error occurred during registration",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
