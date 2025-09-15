@@ -42,7 +42,7 @@ export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, on
   // Format phone number to Kenyan format
   const formatPhoneNumber = (phone: string): string => {
     // Remove any non-digit characters
-    let digits = phone.replace(/\D/g, '');
+    const digits = phone.replace(/\D/g, '');
     
     // Format as Kenyan number
     if (digits.startsWith('0') && digits.length >= 10) {

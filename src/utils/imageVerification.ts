@@ -26,7 +26,7 @@ export const verifyPlantImage = (imageUrl: string): Promise<{isPlant: boolean, m
         
         // Count green pixels (simplified approach)
         let greenPixels = 0;
-        let totalPixels = data.length / 4;
+        const totalPixels = data.length / 4;
         
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];

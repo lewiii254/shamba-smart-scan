@@ -72,7 +72,7 @@ serve(async (req) => {
           const planRef = txnData.account_reference.split("-").pop()?.toLowerCase() || "monthly";
           
           // Calculate expiry date based on plan
-          let endDate = new Date();
+          const endDate = new Date();
           if (planRef.includes("annual")) {
             endDate.setFullYear(endDate.getFullYear() + 1);
           } else {
