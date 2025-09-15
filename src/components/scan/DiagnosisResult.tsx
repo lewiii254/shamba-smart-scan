@@ -2,26 +2,31 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertTriangle, HelpCircle, Loader2 } from "lucide-react";
+import { AIAnalysisResult } from "@/services/enhancedAIService";
 
 interface DiagnosisResultProps {
   isLoading: boolean;
   processingStage: number;
+  processingMessage?: string;
   diagnosis: string | null;
   description: string | null;
   symptoms: string[] | null;
   advice: string | null;
   confidence: number | null;
+  analysisResult?: AIAnalysisResult | null;
   handleReset: () => void;
 }
 
 const DiagnosisResult: React.FC<DiagnosisResultProps> = ({
   isLoading,
   processingStage,
+  processingMessage,
   diagnosis,
   description,
   symptoms,
   advice,
   confidence,
+  analysisResult,
   handleReset,
 }) => {
   const getConfidenceColor = (confidence: number) => {
@@ -40,13 +45,13 @@ const DiagnosisResult: React.FC<DiagnosisResultProps> = ({
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center space-y-2">
+          <div className="flex flex-col items-center justify-center space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-green-500" />
-            {processingStage === 0 && <p className="text-gray-500">Initializing AI...</p>}
-            {processingStage === 1 && <p className="text-gray-500">Analyzing image features...</p>}
-            {processingStage === 2 && <p className="text-gray-500">Identifying potential diseases...</p>}
-            {processingStage === 3 && <p className="text-gray-500">Cross-referencing with plant database...</p>}
-            {processingStage === 4 && <p className="text-gray-500">Generating diagnosis and recommendations...</p>}
+            <div className="text-center">
+              <p className="font-medium text-gray-700">Processing your image...</p>
+              {processingMessage && <p className="text-sm text-gray-500 mt-1">{processingMessage}</p>}
+              <p className="text-xs text-gray-400 mt-2">Stage {processingStage}/5</p>
+            </div>
           </div>
         ) : diagnosis ? (
           <>

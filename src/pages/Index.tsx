@@ -7,6 +7,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { ScanHistory } from "@/types/database";
 import { Camera, CheckCircle, BookOpen, MessageSquare } from "lucide-react";
 import { mockDataService } from "@/services/mockDataService";
+import { EnhancedAIService, AIAnalysisResult } from "@/services/enhancedAIService";
 
 // Components
 import Navigation from "@/components/layout/Navigation";
@@ -88,6 +89,8 @@ const Index = () => {
   });
   const [processingStage, setProcessingStage] = useState(0);
   const [confidence, setConfidence] = useState<number | null>(null);
+  const [processingMessage, setProcessingMessage] = useState<string>('');
+  const [analysisResult, setAnalysisResult] = useState<AIAnalysisResult | null>(null);
   const { toast } = useToast();
 
   const fetchScanHistory = useCallback(async () => {
@@ -171,37 +174,37 @@ const Index = () => {
     
     setIsLoading(true);
     setProcessingStage(0);
+    setProcessingMessage('');
+    setAnalysisResult(null);
     
-    const simulateProcessing = async () => {
-      setProcessingStage(1);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Use enhanced AI service
+      const result = await EnhancedAIService.analyzeImage(
+        image, 
+        (stage: number, message: string) => {
+          setProcessingStage(stage);
+          setProcessingMessage(message);
+        }
+      );
       
-      setProcessingStage(2);
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Update UI with enhanced results
+      setAnalysisResult(result);
+      setDiagnosis(result.disease.name);
+      setDescription(result.disease.description);
+      setSymptoms(result.disease.symptoms);
+      setAdvice(result.disease.treatment);
+      setConfidence(result.confidence);
       
-      setProcessingStage(3);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setProcessingStage(4);
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const selectedDiagnosis = diseases[Math.floor(Math.random() * diseases.length)];
-      
-      setDiagnosis(selectedDiagnosis.name);
-      setDescription(selectedDiagnosis.description);
-      setSymptoms(selectedDiagnosis.symptoms);
-      setAdvice(selectedDiagnosis.advice);
-      setConfidence(selectedDiagnosis.confidence);
-      
+      // Save to history if user is logged in
       if (user) {
         try {
           if (isUsingMockData) {
             // Use mock data service
             const { error } = await mockDataService.addScanHistory(user.id, {
               image_url: image,
-              diagnosis: selectedDiagnosis.name,
-              treatment: selectedDiagnosis.advice,
-              confidence: selectedDiagnosis.confidence,
+              diagnosis: result.disease.name,
+              treatment: result.disease.treatment,
+              confidence: result.confidence,
             });
             
             if (error) throw new Error(error);
@@ -212,9 +215,9 @@ const Index = () => {
               .insert({
                 user_id: user.id,
                 image_url: image,
-                diagnosis: selectedDiagnosis.name,
-                treatment: selectedDiagnosis.advice,
-                confidence: selectedDiagnosis.confidence,
+                diagnosis: result.disease.name,
+                treatment: result.disease.treatment,
+                confidence: result.confidence,
               });
             
             if (error) throw error;
@@ -231,16 +234,24 @@ const Index = () => {
         }
       }
       
+      // Show success message with enhanced details
       toast({
         title: "Analysis Complete",
-        description: "AI has successfully diagnosed your plant"
+        description: `${result.disease.name} detected with ${(result.confidence * 100).toFixed(0)}% confidence`,
       });
       
+    } catch (error: unknown) {
+      console.error('Analysis failed:', error);
+      toast({
+        title: "Analysis Failed",
+        description: "Please try again or contact support",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
       setProcessingStage(0);
-    };
-    
-    simulateProcessing();
+      setProcessingMessage('');
+    }
   };
 
   const handleViewHistoryScan = (scan: ScanResult) => {
@@ -291,6 +302,8 @@ const Index = () => {
     setSymptoms(null);
     setDescription(null);
     setConfidence(null);
+    setAnalysisResult(null);
+    setProcessingMessage('');
     toast({
       title: "New Scan",
       description: "Ready for a new plant scan"
@@ -380,11 +393,13 @@ const Index = () => {
               <DiagnosisResult 
                 isLoading={isLoading}
                 processingStage={processingStage}
+                processingMessage={processingMessage}
                 diagnosis={diagnosis}
                 description={description}
                 symptoms={symptoms}
                 advice={advice}
                 confidence={confidence}
+                analysisResult={analysisResult}
                 handleReset={handleReset}
               />
             </div>
