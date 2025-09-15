@@ -20,6 +20,7 @@ import AboutContent from "@/components/about/AboutContent";
 import TimelineIntegration from "@/components/scan/TimelineIntegration";
 import QuickActions from "@/components/dashboard/QuickActions";
 import RecentActivity from "@/components/dashboard/RecentActivity";
+import AdvancedAnalytics from "@/components/analytics/AdvancedAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 type ScanResult = {
@@ -463,22 +464,30 @@ const Index = () => {
           
           <TabsContent value="history">
             <ScanHeader 
-              title="Dashboard Overview"
-              description="Manage your plant health data and access key features"
+              title="Advanced Analytics Dashboard"
+              description="Comprehensive insights into your crop health, disease trends, and ROI tracking"
             />
 
+            {/* Quick Stats Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <QuickActions />
               <RecentActivity />
             </div>
+
+            {/* Advanced Analytics */}
+            <AdvancedAnalytics />
             
-            <ScanHistoryList 
-              scanHistory={scanHistory}
-              handleViewHistoryScan={handleViewHistoryScan}
-              handleClearHistory={handleClearHistory}
-              setActiveTab={setActiveTab}
-              getConfidenceColor={getConfidenceColor}
-            />
+            {/* Scan History */}
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-4">Recent Scan History</h3>
+              <ScanHistoryList 
+                scanHistory={scanHistory}
+                handleViewHistoryScan={handleViewHistoryScan}
+                handleClearHistory={handleClearHistory}
+                setActiveTab={setActiveTab}
+                getConfidenceColor={getConfidenceColor}
+              />
+            </div>
           </TabsContent>
           
           <TabsContent value="about">
