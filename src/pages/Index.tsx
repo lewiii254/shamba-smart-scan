@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -93,9 +93,9 @@ const Index = () => {
     if (user && activeTab === "history") {
       fetchScanHistory();
     }
-  }, [user, activeTab]);
+  }, [user, activeTab, fetchScanHistory]);
 
-  const fetchScanHistory = async () => {
+  const fetchScanHistory = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('scan_history')
@@ -124,7 +124,7 @@ const Index = () => {
         variant: 'destructive'
       });
     }
-  };
+  }, [toast]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

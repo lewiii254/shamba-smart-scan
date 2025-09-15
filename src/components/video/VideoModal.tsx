@@ -21,8 +21,8 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, video }) => {
   
   const handleWatchLater = () => {
     // Store in localStorage for persistence
-    const watchLater = JSON.parse(localStorage.getItem('watchLater') || '[]');
-    if (!watchLater.find((v: any) => v.id === video.id)) {
+    const watchLater = JSON.parse(localStorage.getItem('watchLater') || '[]') as VideoTutorial[];
+    if (!watchLater.find((v: VideoTutorial) => v.id === video.id)) {
       watchLater.push(video);
       localStorage.setItem('watchLater', JSON.stringify(watchLater));
       toast({

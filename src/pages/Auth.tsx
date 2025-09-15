@@ -47,10 +47,11 @@ const Auth = () => {
       });
       
       navigate("/scan");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An error occurred during login";
       toast({
         title: "Login failed",
-        description: error.message || "An error occurred during login",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -90,10 +91,11 @@ const Auth = () => {
       });
       
       setActiveTab("login");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An error occurred during registration";
       toast({
         title: "Registration failed",
-        description: error.message || "An error occurred during registration",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

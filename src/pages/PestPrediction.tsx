@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,7 +48,7 @@ const PestPrediction = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
 
-  const mockPestThreats: PestThreat[] = [
+  const mockPestThreats: PestThreat[] = useMemo(() => [
     {
       id: 'fall-armyworm',
       name: 'Fall Armyworm',
@@ -100,13 +100,13 @@ const PestPrediction = () => {
       ],
       description: 'Larvae that cut young plants at soil level, causing plant death.'
     }
-  ];
+  ], []);
 
   useEffect(() => {
     analyzePestRisk();
-  }, [selectedCrop]);
+  }, [analyzePestRisk]);
 
-  const analyzePestRisk = async () => {
+  const analyzePestRisk = useCallback(async () => {
     setIsLoading(true);
     
     // Simulate analysis based on environmental conditions
@@ -141,7 +141,7 @@ const PestPrediction = () => {
       setPestThreats(adjustedThreats);
       setIsLoading(false);
     }, 1500);
-  };
+  }, [selectedCrop, currentWeather.humidity, currentWeather.temperature, mockPestThreats]);
 
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {

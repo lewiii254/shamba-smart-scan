@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
@@ -44,7 +44,7 @@ export const useForum = () => {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -61,7 +61,7 @@ export const useForum = () => {
 
       // Fetch comments and likes for each post
       const postsWithData = await Promise.all(
-        (postsData || []).map(async (post: any) => {
+        (postsData || []).map(async (post: ForumPost) => {
           // Fetch comments
           const { data: comments } = await supabase
             .from('forum_comments')
@@ -83,7 +83,7 @@ export const useForum = () => {
 
           // Check if user has liked each comment
           const commentsWithLikes = await Promise.all(
-            (comments || []).map(async (comment: any) => {
+            (comments || []).map(async (comment: ForumComment) => {
               let commentUserHasLiked = false;
               if (user) {
                 const { data: userCommentLike } = await supabase
@@ -117,7 +117,7 @@ export const useForum = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
 
   const createPost = async (postData: NewPostData) => {
     if (!user) {
@@ -263,7 +263,7 @@ export const useForum = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [user]);
+  }, [fetchPosts]);
 
   return {
     posts,

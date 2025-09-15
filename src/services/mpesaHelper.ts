@@ -1,18 +1,33 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
+interface MpesaTransaction {
+  status: string;
+  transaction_id: string;
+}
+
+interface SupabaseRpcResponse<T> {
+  data: T | null;
+  error: unknown;
+}
+
+interface UserSubscriptionData {
+  id: string;
+  plan_id: string;
+  status: string;
+  expires_at: string;
+  created_at: string;
+}
+
 /**
  * Helper function to directly query tables that might not be in TypeScript types
  */
 export const queryMpesaTransaction = async (checkoutRequestId: string) => {
   try {
     // Use a type casting for both the function and its parameters to bypass TypeScript checking
-    const { data, error } = await (supabase.rpc as any)('get_mpesa_transaction', {
+    const { data, error } = await (supabase.rpc as (name: string, params: Record<string, unknown>) => Promise<SupabaseRpcResponse<MpesaTransaction>>)('get_mpesa_transaction', {
       p_checkout_request_id: checkoutRequestId
-    }) as { 
-      data: { status: string; transaction_id: string } | null; 
-      error: any 
-    };
+    });
     
     if (error) {
       console.error("Error querying mpesa_transactions:", error);
@@ -32,12 +47,9 @@ export const queryMpesaTransaction = async (checkoutRequestId: string) => {
 export const queryUserSubscription = async (userId: string) => {
   try {
     // Use a type casting for both the function and its parameters to bypass TypeScript checking
-    const { data, error } = await (supabase.rpc as any)('get_user_subscription', {
+    const { data, error } = await (supabase.rpc as (name: string, params: Record<string, unknown>) => Promise<SupabaseRpcResponse<UserSubscriptionData>>)('get_user_subscription', {
       p_user_id: userId
-    }) as { 
-      data: any; 
-      error: any 
-    };
+    });
     
     if (error) {
       console.error("Error querying user_subscriptions:", error);

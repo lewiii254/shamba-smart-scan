@@ -12,13 +12,30 @@ import { MpesaPaymentModal } from "@/components/payment/MpesaPaymentModal";
 import { getUserSubscriptionStatus } from "@/services/mpesaService";
 import { Badge } from "@/components/ui/badge";
 
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  features: string[];
+  popular?: boolean;
+}
+
+interface UserSubscription {
+  id: string;
+  plan_id: string;
+  status: string;
+  expires_at: string;
+  created_at: string;
+}
+
 const Subscription = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<any>(null);
-  const [activeSubscription, setActiveSubscription] = useState<any>(null);
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
+  const [activeSubscription, setActiveSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Fetch user's subscription status
@@ -86,7 +103,7 @@ const Subscription = () => {
     }
   ];
 
-  const handleSubscribe = (plan: any) => {
+  const handleSubscribe = (plan: SubscriptionPlan) => {
     if (!user) {
       toast({
         title: "Authentication Required",
