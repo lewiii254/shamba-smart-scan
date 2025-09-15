@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { ScanHistory } from "@/types/database";
 import { Camera, CheckCircle, BookOpen, MessageSquare } from "lucide-react";
+import { mockDataService } from "@/services/mockDataService";
 
 // Components
 import Navigation from "@/components/layout/Navigation";
@@ -69,7 +70,7 @@ const diseases = [
 
 const Index = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, isUsingMockData } = useAuth();
   const { t } = useLanguage();
   const [image, setImage] = useState<string | null>(null);
   const [advice, setAdvice] = useState<string | null>(null);
@@ -89,32 +90,47 @@ const Index = () => {
   const [confidence, setConfidence] = useState<number | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (user && activeTab === "history") {
-      fetchScanHistory();
-    }
-  }, [user, activeTab, fetchScanHistory]);
-
   const fetchScanHistory = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('scan_history')
-        .select('*')
-        .order('created_at', { ascending: false });
+      if (isUsingMockData) {
+        // Use mock data service
+        const { data, error } = await mockDataService.getScanHistory(user?.id);
+        
+        if (error) {
+          throw new Error(error);
+        }
 
-      if (error) {
-        throw error;
-      }
+        if (data) {
+          setScanHistory(data.map((item) => ({
+            id: item.id,
+            image: item.image_url,
+            diagnosis: item.diagnosis || '',
+            advice: item.treatment || '',
+            date: new Date(item.created_at),
+            confidence: item.confidence || 0
+          })));
+        }
+      } else {
+        // Use real Supabase
+        const { data, error } = await supabase
+          .from('scan_history')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (data) {
-        setScanHistory(data.map((item: ScanHistory) => ({
-          id: item.id,
-          image: item.image_url,
-          diagnosis: item.diagnosis || '',
-          advice: item.treatment || '',
-          date: new Date(item.created_at),
-          confidence: item.confidence || 0
-        })));
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setScanHistory(data.map((item: ScanHistory) => ({
+            id: item.id,
+            image: item.image_url,
+            diagnosis: item.diagnosis || '',
+            advice: item.treatment || '',
+            date: new Date(item.created_at),
+            confidence: item.confidence || 0
+          })));
+        }
       }
     } catch (error: unknown) {
       console.error('Error fetching scan history:', error);
@@ -124,7 +140,13 @@ const Index = () => {
         variant: 'destructive'
       });
     }
-  }, [toast]);
+  }, [toast, isUsingMockData, user]);
+
+  useEffect(() => {
+    if (user && activeTab === "history") {
+      fetchScanHistory();
+    }
+  }, [user, activeTab, fetchScanHistory]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -173,17 +195,30 @@ const Index = () => {
       
       if (user) {
         try {
-          const { error } = await supabase
-            .from('scan_history')
-            .insert({
-              user_id: user.id,
+          if (isUsingMockData) {
+            // Use mock data service
+            const { error } = await mockDataService.addScanHistory(user.id, {
               image_url: image,
               diagnosis: selectedDiagnosis.name,
               treatment: selectedDiagnosis.advice,
               confidence: selectedDiagnosis.confidence,
             });
-          
-          if (error) throw error;
+            
+            if (error) throw new Error(error);
+          } else {
+            // Use real Supabase
+            const { error } = await supabase
+              .from('scan_history')
+              .insert({
+                user_id: user.id,
+                image_url: image,
+                diagnosis: selectedDiagnosis.name,
+                treatment: selectedDiagnosis.advice,
+                confidence: selectedDiagnosis.confidence,
+              });
+            
+            if (error) throw error;
+          }
           
           fetchScanHistory();
         } catch (error: unknown) {
@@ -220,12 +255,19 @@ const Index = () => {
     if (!user) return;
     
     try {
-      const { error } = await supabase
-        .from('scan_history')
-        .delete()
-        .eq('user_id', user.id);
-      
-      if (error) throw error;
+      if (isUsingMockData) {
+        // Use mock data service
+        const { error } = await mockDataService.clearScanHistory(user.id);
+        if (error) throw new Error(error);
+      } else {
+        // Use real Supabase
+        const { error } = await supabase
+          .from('scan_history')
+          .delete()
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+      }
       
       setScanHistory([]);
       toast({
