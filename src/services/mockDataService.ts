@@ -18,7 +18,7 @@ export interface MockScanHistory {
 }
 
 let isUsingMockData = false;
-let mockUsers: MockUser[] = [];
+const mockUsers: MockUser[] = [];
 let mockScanHistory: MockScanHistory[] = [];
 let currentMockUser: MockUser | null = null;
 

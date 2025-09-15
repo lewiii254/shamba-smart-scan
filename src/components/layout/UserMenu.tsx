@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, LogIn, Settings, Crown } from "lucide-react";
+import { User, LogOut, LogIn, Settings, Crown, Calendar } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -82,7 +82,7 @@ const UserMenu: React.FC = () => {
         </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => navigate("/plant-timeline")} className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
+          <Calendar className="mr-2 h-4 w-4" />
           <span>Plant Timeline</span>
         </DropdownMenuItem>
         

@@ -98,6 +98,20 @@ export const MpesaPaymentModal: React.FC<MpesaPaymentModalProps> = ({ isOpen, on
             window.clearInterval(intervalId!);
             window.clearInterval(timerIntervalId!);
             
+            // Activate subscription in mock mode
+            const subscriptionData = {
+              id: `sub_${Date.now()}`,
+              plan: plan.id,
+              status: 'active',
+              start_date: new Date().toISOString(),
+              end_date: new Date(Date.now() + (plan.id === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000).toISOString(),
+              user_id: user?.id || 'mock-user-1',
+              amount: plan.price,
+              created_at: new Date().toISOString()
+            };
+            
+            localStorage.setItem('mock_user_subscription', JSON.stringify(subscriptionData));
+            
             toast({
               title: "Payment Successful!",
               description: "Your subscription has been activated.",

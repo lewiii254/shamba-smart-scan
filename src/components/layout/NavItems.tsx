@@ -34,12 +34,7 @@ export const primaryNavItems = [
     icon: <History className="h-4 w-4 mr-1" />,
     authRequired: true
   },
-  { 
-    name: "Timeline", 
-    path: "/plant-timeline", 
-    icon: <Calendar className="h-4 w-4 mr-1" />,
-    authRequired: true
-  },
+
   { 
     name: "Expert Chat", 
     path: "/specialist-chat", 
