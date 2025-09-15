@@ -48,12 +48,12 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+254712345678",
-    location: "Nairobi, Kenya",
-    farmType: "Mixed Crops",
-    bio: "Small-scale farmer with 5 years of experience in organic farming practices."
+    fullName: "",
+    email: "",
+    phone: "",
+    location: "",
+    farmType: "",
+    bio: ""
   });
   const [savedVideos, setSavedVideos] = useState(videoTutorials.slice(0, 3));
   const [subscriptionStatus, setSubscriptionStatus] = useState("Free Plan");
@@ -61,9 +61,38 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (user) {
-      // Load user profile data from Supabase (simplified for demo)
       console.log("Loading user data for:", user.id);
-      // In production, fetch actual user data here
+      
+      // Try to load saved profile data from localStorage first
+      const savedProfile = localStorage.getItem(`user_profile_${user.id}`);
+      let profileData = null;
+      
+      if (savedProfile) {
+        try {
+          profileData = JSON.parse(savedProfile);
+        } catch (e) {
+          console.error("Error parsing saved profile:", e);
+        }
+      }
+      
+      // Extract user data from the auth context or use saved profile data
+      const extractedUserData = {
+        fullName: profileData?.fullName || user.full_name || user.user_metadata?.full_name || user.username || "",
+        email: profileData?.email || user.email || "",
+        phone: profileData?.phone || user.phone || user.user_metadata?.phone || "",
+        location: profileData?.location || user.user_metadata?.location || "",
+        farmType: profileData?.farmType || user.user_metadata?.farm_type || "",
+        bio: profileData?.bio || user.user_metadata?.bio || ""
+      };
+      
+      setUserData(extractedUserData);
+      
+      // In production, you could also fetch additional user profile data from Supabase here
+      // const { data, error } = await supabase
+      //   .from('user_profiles')
+      //   .select('*')
+      //   .eq('user_id', user.id)
+      //   .single();
     }
   }, [user]);
 
@@ -77,7 +106,28 @@ const ProfilePage = () => {
 
   const handleSaveProfile = async () => {
     try {
-      // In production, save to Supabase here
+      // Save to localStorage for mock mode, in production this would save to Supabase
+      if (user) {
+        const profileData = {
+          user_id: user.id,
+          ...userData,
+          updated_at: new Date().toISOString()
+        };
+        
+        localStorage.setItem(`user_profile_${user.id}`, JSON.stringify(profileData));
+        
+        // You could also update the user metadata in mock mode or real Supabase here
+        // await supabase.auth.updateUser({
+        //   data: { 
+        //     full_name: userData.fullName,
+        //     phone: userData.phone,
+        //     location: userData.location,
+        //     farm_type: userData.farmType,
+        //     bio: userData.bio
+        //   }
+        // });
+      }
+      
       toast({
         title: "Profile Updated!",
         description: "Your profile information has been updated successfully.",
@@ -113,10 +163,10 @@ const ProfilePage = () => {
               <CardHeader className="text-center">
                 <Avatar className="w-24 h-24 mx-auto">
                   <AvatarImage src={user?.user_metadata?.avatar_url || "/placeholder.svg"} />
-                  <AvatarFallback>{userData.fullName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  <AvatarFallback>{userData.fullName ? userData.fullName.split(' ').map(n => n[0]).join('').toUpperCase() : user?.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
-                <CardTitle>{userData.fullName}</CardTitle>
-                <CardDescription>{userData.location}</CardDescription>
+                <CardTitle>{userData.fullName || user?.email || "User"}</CardTitle>
+                <CardDescription>{userData.location || "Location not set"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
